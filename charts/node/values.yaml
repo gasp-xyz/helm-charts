@@ -1,0 +1,45 @@
+# Default values for mangata-node.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+env: local
+domainZone: mangata.online
+remoteCluster: false
+
+replicas: 1
+nameOverride: ''
+
+image:
+  repository: mangatasolutions/mangata-node
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: rococo-0.25.0
+
+node:
+  chain: public-testnet
+  storageSize: 10Gi
+  # Example: `bootnodeAddr: /dns4/node-01/tcp/30333/p2p/12D3KooWSCufgHzV4fCwRijfH2k3abrpAJxTKxEvN1FDuRXA2U9x`
+  bootnodeAddr: ''
+  nodeKey: "0000000000000000000000000000000000000000000000000000000000000003"
+  accountKeys:
+  - type: aura
+    scheme: sr25519
+    seed: //Alice
+  env:
+    RUST_LOG: "info"
+  relaychain:
+    image: "parity/polkadot:v0.9.29"
+    chain: rococo-local
+    storageSize: 10Gi
+    bootnode: /dns/relaychain-alice/tcp/30333/p2p/12D3KooWEyoppNCUx8Yx66oV9fJnriXwCcXwDDUA2kj6vnc6iDEp
+  parachainRegisterSidecar:
+    enable: false
+    relaychainHostAddr: "ws://relaychain-alice:9944"
+    parachainId: 2110
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 1Gi
+  limits:
+    cpu: 1000m
+    memory: 2Gi
