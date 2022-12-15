@@ -23,7 +23,7 @@ spec:
           command: ["/bin/bash"]
           args: 
             - -c
-            - /usr/bin/polkadot build-spec --chain= {{ .Values.node.relaychain.chain }} --disable-default-bootnode --raw > /etc/mangata/relaychain-local.json
+            - /usr/bin/polkadot build-spec --chain={{ .Values.node.relaychain.chain }} --disable-default-bootnode --raw > /etc/mangata/relaychain-local.json
           volumeMounts:
             - mountPath: /etc/mangata/
               name: node-chainspec-volume
@@ -136,7 +136,7 @@ spec:
             - name: COLLATOR_ADDR
               value: {{ .Values.node.parachainRegisterSidecar.relaychainHostAddr | quote }}
             - name: PARA_ID
-              value:  {{ .Values.node.parachainRegisterSidecar.parachainId }}
+              value:  {{ .Values.node.parachainRegisterSidecar.parachainId | quote }}
           volumeMounts:
             - mountPath: /etc/mangata/
               name: node-chainspec-volume
@@ -151,7 +151,7 @@ spec:
       {{- range $keys := .Values.node.accountKeys }}
         - name: {{ .type }}
           secret:
-            secretName: {{ include "node.name" . }}-{{ .type }}
+            secretName: {{ include "node.name" $ }}-{{ .type }}
             defaultMode: 0400
       {{- end }}
   volumeClaimTemplates:

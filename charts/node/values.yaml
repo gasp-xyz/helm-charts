@@ -12,7 +12,7 @@ image:
   repository: mangatasolutions/mangata-node
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: rococo-0.25.0
+  tag: develop
 
 node:
   chain: public-testnet

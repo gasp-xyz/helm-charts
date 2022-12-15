@@ -45,7 +45,7 @@ spec:
             - --prometheus-port=9616
             - --node-key=0000000000000000000000000000000000000000000000000000000000000001
             {{- if .Values.remoteCluster }}
-            - "--public-addr=/dns4/{{ $name }}.{{ .Values.env }}.{{ .Values.domainZone }}/tcp/30333"
+            - "--public-addr=/dns4/{{ $name }}-{{ .Values.env }}.{{ .Values.domainZone }}/tcp/30333"
             {{- end }}
             - "--alice"
           ports:
