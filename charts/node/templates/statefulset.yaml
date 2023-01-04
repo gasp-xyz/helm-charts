@@ -18,15 +18,49 @@ spec:
         service: {{ include "node.name" . }}
     spec:
       initContainers:
+        {{- if or .Values.node.customChainspecUrl .Values.relaychain.customChainspecUrl}}
+        - name: download-chainspec
+          image: {{ .Values.initContainer.image.repository }}:{{ .Values.initContainer.image.tag }}
+          command: [ "/bin/sh" ]
+          args:
+            - -c
+            - |
+              set -eux -o pipefail
+              {{- if .Values.node.customChainspecUrl }}
+              {{- if not .Values.node.forceDownloadChainspec }}
+              if [ ! -f {{ .Values.node.customChainspecPath }} ]; then
+              {{- end }}
+                wget -O {{ .Values.node.customChainspecPath }} {{ .Values.node.customChainspecUrl }}
+              {{- if not .Values.node.forceDownloadChainspec }}
+              fi
+              {{- end }}
+              {{- end }}
+              {{- if .Values.relaychain.customChainspecUrl }}
+              {{- if not .Values.node.forceDownloadChainspec }}
+              if [ ! -f {{ .Values.relaychain.chainspecPath }} ]; then
+              {{- end }}
+                wget -O {{ .Values.relaychain.chainspecPath }} {{ .Values.relaychain.customChainspecUrl }}
+              {{- if not .Values.node.forceDownloadChainspec }}
+              fi
+              {{- end }}
+              {{- end }}
+          volumeMounts:
+            - mountPath: /chain-data
+              name: chain-data
+            - mountPath: /relaychain-data
+              name: relaychain-data
+          securityContext:
+            runAsUser: 0
+        {{- else }}
         - name: chainspec-generator
-          image: {{ .Values.node.relaychain.image | quote }}
+          image: {{ .Values.relaychain.image | quote }}
           command: ["/bin/bash"]
           args: 
             - -c
-            - /usr/bin/polkadot build-spec --chain={{ .Values.node.relaychain.chain }} --disable-default-bootnode --raw > /etc/mangata/relaychain-local.json
+            - /usr/bin/polkadot build-spec --chain={{ .Values.relaychain.chain }} --disable-default-bootnode --raw > {{ .Values.relaychain.chainspecPath }}
           volumeMounts:
-            - mountPath: /etc/mangata/
-              name: node-chainspec-volume
+            - mountPath: /relaychain-data
+              name: relaychain-data
         - name: export-genesis-wasm-and-state
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           command: ["/bin/bash"]
@@ -34,11 +68,12 @@ spec:
             - -c
             - |
               set -eu
-              /mangata/node export-genesis-state --chain={{ .Values.node.chain }} > /etc/mangata/genesis-state
-              /mangata/node export-genesis-wasm --chain={{ .Values.node.chain }} > /etc/mangata/genesis-wasm
+              {{ .Values.node.command }} export-genesis-state --chain={{ .Values.node.chain }} > /chain-data/genesis-state
+              {{ .Values.node.command }} export-genesis-wasm --chain={{ .Values.node.chain }} > /chain-data/genesis-wasm
           volumeMounts:
-            - mountPath: /etc/mangata/
-              name: node-chainspec-volume
+            - mountPath: /chain-data
+              name: chain-data
+        {{- end }}
         - name: inject-keys
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           command: ["/bin/bash"]
@@ -51,16 +86,26 @@ spec:
                  echo "Error: File /var/run/secrets/{{ .type }}/type does not exist"
                  exit 1
               fi
-              /mangata/node key insert --chain public-testnet --keystore-path /keystore \
+              {{ $.Values.node.command }} key insert --chain {{ if .Values.node.customChainspecUrl }}{{ .Values.node.customChainspecPath }}{{ else }}{{ .Values.node.chain }}{{ end }} \
+              --keystore-path /chain-data/keystore \
               --key-type $(cat /var/run/secrets/{{ .type }}/type) \
               --scheme $(cat /var/run/secrets/{{ .type }}/scheme) \
               --suri /var/run/secrets/{{ .type }}/seed \
               && echo "Inserted key {{ .type }} into Keystore" \
-              || echo "Failed to insert key {{ .type}} into Keystore."
+              || echo "Failed to insert key {{ .type }} into Keystore."
               {{- end }}
+              {{- /* Generate node key`*/}}
+              NODE_KEY_PATH="/chain-data/keystore/node-key"
+              if [ -f "${NODE_KEY_PATH}" ]; then
+                echo "Node key already exists, skipping node key generation"
+              else
+                {{ .Values.node.command }} key generate-node-key --file ${NODE_KEY_PATH} \
+                && echo "Generated node key into Keystore" \
+                || echo "Failed to generate and insert node key into Keystore."
+              fi
           volumeMounts:
-            - mountPath: /keystore
-              name: chain-keystore
+            - mountPath: /chain-data
+              name: chain-data
           {{- range $keys := .Values.node.accountKeys }}
             - mountPath: /var/run/secrets/{{ .type }}
               name: {{ .type }}
@@ -71,12 +116,25 @@ spec:
           imagePullPolicy: Always
           command:
             # parachain
-            - /mangata/node
+            - {{ .Values.node.command }}
             - --name={{ include "node.name" . }}
-            - --chain={{ .Values.node.chain }}
-            - --base-path=/mangata/data
-            - --keystore-path=/keystore
+            - --chain={{ if .Values.node.customChainspecUrl }}{{ .Values.node.customChainspecPath }}{{ else }}{{ .Values.node.chain }}{{ end }}
+            {{- if .Values.node.isCollator }}
             - --collator
+            {{- end }}
+            {{- if .Values.node.bootnodeAddr }}
+            - --bootnodes={{ .Values.node.bootnodeAddr }}
+            {{- end }}
+            {{- if .Values.remoteCluster }}
+            - --public-addr=/dns4/{{ include "node.name" . }}-{{ .Values.env }}.{{ .Values.domainZone }}/tcp/30333
+            {{- end }}
+            {{- if .Values.node.customNodeKey }}
+            - --node-key {{ .Values.node.customNodeKey }} \
+            {{- else }}
+            - --node-key-file /chain-data/keystore/node-key \
+            {{- end }}            
+            - --keystore-path=/chain-data/keystore
+            - --base-path=/chain-data
             - --force-authoring
             - --port=30333
             - --ws-port=9944
@@ -87,19 +145,12 @@ spec:
             - --prometheus-external
             - --rpc-methods=Unsafe
             - --rpc-cors=all
-            - --node-key={{ .Values.node.nodeKey }}
-            {{- if .Values.remoteCluster }}
-            - --public-addr=/dns4/{{ include "node.name" . }}-{{ .Values.env }}.{{ .Values.domainZone }}/tcp/30333
-            {{- end }}            
-            {{- if .Values.node.bootnodeAddr }}
-            - --bootnodes=/dns4/node-01/tcp/30333/p2p/12D3KooWSCufgHzV4fCwRijfH2k3abrpAJxTKxEvN1FDuRXA2U9x
-            {{- end }}
             - --
             # relaychain
-            - --base-path=/mangata/relaychaindata
-            - --bootnodes={{ .Values.node.relaychain.bootnode }}
+            - --bootnodes={{ .Values.relaychain.bootnode }}
+            - --chain={{ .Values.relaychain.chainspecPath }}
+            - --base-path=/relaychain-data
             - --execution=wasm
-            - --chain=/etc/mangata/relaychain-local.json
           ports:
             - containerPort: 9716
             - containerPort: 9944
@@ -113,41 +164,28 @@ spec:
           resources:
           {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
-            - mountPath: /etc/mangata/
-              name: node-chainspec-volume
-            - mountPath: /keystore
-              name: chain-keystore
-            - mountPath: /mangata/data
-              name: chaindata            
-            - mountPath: /mangata/relaychaindata
-              name: relaychaindata
+            - mountPath: /chain-data
+              name: chain-data            
+            - mountPath: /relaychain-data
+              name: relaychain-data
         {{- if .Values.node.parachainRegisterSidecar.enable }}
         - name: parachain-register-sidecar
           image: mangatasolutions/parachain-register:1.0
-          command:
-            - bash
-            - -c
-            - node index.js
+          command: ['bash', '-c', 'node index.js']
           env:
             - name: STATE_FILE
-              value: /etc/mangata/genesis-state
+              value: /chain-data/genesis-state
             - name: WASM_FILE
-              value: /etc/mangata/genesis-wasm
+              value: /chain-data/genesis-wasm
             - name: COLLATOR_ADDR
               value: {{ .Values.node.parachainRegisterSidecar.relaychainHostAddr | quote }}
             - name: PARA_ID
               value:  {{ .Values.node.parachainRegisterSidecar.parachainId | quote }}
           volumeMounts:
-            - mountPath: /etc/mangata/
-              name: node-chainspec-volume
+            - mountPath: /chain-data
+              name: chain-data
         {{- end }}
       volumes:
-        - name: node-chainspec-volume
-          emptyDir: {}
-        - name: chain-keystore
-          emptyDir:
-            medium: "Memory"
-            sizeLimit: 10Mi
       {{- range $keys := .Values.node.accountKeys }}
         - name: {{ .type }}
           secret:
@@ -156,7 +194,7 @@ spec:
       {{- end }}
   volumeClaimTemplates:
     - metadata:
-        name: chaindata
+        name: chain-data
       spec:
         storageClassName: "standard-rwo"
         accessModes: ["ReadWriteOnce"]
@@ -164,10 +202,10 @@ spec:
           requests:
             storage: {{ .Values.node.storageSize }}
     - metadata:
-        name: relaychaindata
+        name: relaychain-data
       spec:
         storageClassName: "standard-rwo"
         accessModes: ["ReadWriteOnce"]
         resources:
           requests:
-            storage: {{ .Values.node.relaychain.storageSize }}
+            storage: {{ .Values.relaychain.storageSize }}

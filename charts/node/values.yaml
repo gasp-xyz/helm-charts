@@ -16,25 +16,36 @@ image:
 
 node:
   chain: public-testnet
+  isCollator: true
   storageSize: 10Gi
   # Example: `bootnodeAddr: /dns4/node-01/tcp/30333/p2p/12D3KooWSCufgHzV4fCwRijfH2k3abrpAJxTKxEvN1FDuRXA2U9x`
   bootnodeAddr: ''
-  nodeKey: "0000000000000000000000000000000000000000000000000000000000000003"
+   # customChainspecUrl:
+  customChainspecPath: "/chain-data/chainspec.json"
+  forceDownloadChainspec: false
   accountKeys:
   - type: aura
     scheme: sr25519
     seed: //Alice
   env:
     RUST_LOG: "info"
-  relaychain:
-    image: "parity/polkadot:v0.9.29"
-    chain: rococo-local
-    storageSize: 10Gi
-    bootnode: /dns/relaychain-alice/tcp/30333/p2p/12D3KooWEyoppNCUx8Yx66oV9fJnriXwCcXwDDUA2kj6vnc6iDEp
-  parachainRegisterSidecar:
-    enable: false
-    relaychainHostAddr: "ws://relaychain-alice:9944"
-    parachainId: 2110
+  ## If configured, will assing custom node key for node instead of using
+  ## generated one that is created and persisted on first run of the node
+  ##
+  customNodeKey: "0000000000000000000000000000000000000000000000000000000000000003"
+  command: /mangata/node
+
+relaychain:
+  image: "parity/polkadot:v0.9.29"
+  chain: rococo-local
+  # customChainspecUrl:
+  chainspecPath: "/relaychain-data/relay_chain_chainspec.json"
+  storageSize: 10Gi
+  bootnode: /dns/relaychain-alice/tcp/30333/p2p/12D3KooWEyoppNCUx8Yx66oV9fJnriXwCcXwDDUA2kj6vnc6iDEp
+parachainRegisterSidecar:
+  enable: false
+  relaychainHostAddr: "ws://relaychain-alice:9944"
+  parachainId: 2110
 
 resources:
   requests:
