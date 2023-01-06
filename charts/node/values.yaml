@@ -4,6 +4,7 @@
 env: local
 domainZone: mangata.online
 remoteCluster: false
+storageClass: standard-rwo
 
 replicas: 1
 nameOverride: ''

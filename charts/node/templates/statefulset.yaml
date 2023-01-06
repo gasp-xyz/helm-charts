@@ -136,7 +136,6 @@ spec:
             - --execution=wasm
             - --keystore-path=/chain-data/keystore
             - --base-path=/chain-data
-            # - --force-authoring
             - --port=30333
             - --ws-port=9944
             - --rpc-port=9933
@@ -199,7 +198,7 @@ spec:
     - metadata:
         name: chain-data
       spec:
-        storageClassName: "standard-rwo"
+        storageClassName: {{ .Values.storageClass }}
         accessModes: ["ReadWriteOnce"]
         resources:
           requests:
@@ -207,7 +206,7 @@ spec:
     - metadata:
         name: relaychain-data
       spec:
-        storageClassName: "standard-rwo"
+        storageClassName: {{ .Values.storageClass }}
         accessModes: ["ReadWriteOnce"]
         resources:
           requests:
