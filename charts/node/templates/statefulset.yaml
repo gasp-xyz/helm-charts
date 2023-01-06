@@ -86,7 +86,7 @@ spec:
                  echo "Error: File /var/run/secrets/{{ .type }}/type does not exist"
                  exit 1
               fi
-              {{ $.Values.node.command }} key insert --chain {{ if .Values.node.customChainspecUrl }}{{ .Values.node.customChainspecPath }}{{ else }}{{ .Values.node.chain }}{{ end }} \
+              {{ $.Values.node.command }} key insert --chain {{ if $.Values.node.customChainspecUrl }}{{ $.Values.node.customChainspecPath }}{{ else }}{{ $.Values.node.chain }}{{ end }} \
               --keystore-path /chain-data/keystore \
               --key-type $(cat /var/run/secrets/{{ .type }}/type) \
               --scheme $(cat /var/run/secrets/{{ .type }}/scheme) \
@@ -129,13 +129,14 @@ spec:
             - --public-addr=/dns4/{{ include "node.name" . }}-{{ .Values.env }}.{{ .Values.domainZone }}/tcp/30333
             {{- end }}
             {{- if .Values.node.customNodeKey }}
-            - --node-key {{ .Values.node.customNodeKey }} \
+            - --node-key={{ .Values.node.customNodeKey }}
             {{- else }}
-            - --node-key-file /chain-data/keystore/node-key \
-            {{- end }}            
+            - --node-key-file=/chain-data/keystore/node-key
+            {{- end }}
+            - --execution=wasm
             - --keystore-path=/chain-data/keystore
             - --base-path=/chain-data
-            - --force-authoring
+            # - --force-authoring
             - --port=30333
             - --ws-port=9944
             - --rpc-port=9933
@@ -147,7 +148,9 @@ spec:
             - --rpc-cors=all
             - --
             # relaychain
-            - --bootnodes={{ .Values.relaychain.bootnode }}
+            {{- if .Values.relaychain.bootnodeAddr }}
+            - --bootnodes={{ .Values.relaychain.bootnodeAddr }}
+            {{- end }}
             - --chain={{ .Values.relaychain.chainspecPath }}
             - --base-path=/relaychain-data
             - --execution=wasm
