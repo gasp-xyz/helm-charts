@@ -4,7 +4,7 @@ metadata:
   name: {{ include "node.name" . }}
   {{- if .Values.remoteCluster }}
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: {{ include "node.name" . }}-{{ .Values.env }}.{{ .Values.domainZone }}
+    external-dns.alpha.kubernetes.io/hostname: {{ include "node.name" . }}-{{ .Values.environment }}.{{ .Values.domainZone }}
   {{- end }}
   labels: {{- include "node.labels" . | nindent 4 }}
     service: {{ include "node.name" . }}

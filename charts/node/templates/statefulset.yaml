@@ -18,7 +18,7 @@ spec:
         service: {{ include "node.name" . }}
     spec:
       initContainers:
-        {{- if or .Values.node.customChainspecUrl .Values.relaychain.customChainspecUrl}}
+        {{- if or .Values.customChainspecUrl .Values.relaychain.customChainspecUrl}}
         - name: download-chainspec
           image: {{ .Values.initContainer.image.repository }}:{{ .Values.initContainer.image.tag }}
           command: [ "/bin/sh" ]
@@ -26,21 +26,21 @@ spec:
             - -c
             - |
               set -eux -o pipefail
-              {{- if .Values.node.customChainspecUrl }}
-              {{- if not .Values.node.forceDownloadChainspec }}
-              if [ ! -f {{ .Values.node.customChainspecPath }} ]; then
+              {{- if .Values.customChainspecUrl }}
+              {{- if not .Values.forceDownloadChainspec }}
+              if [ ! -f {{ .Values.customChainspecPath }} ]; then
               {{- end }}
-                wget -O {{ .Values.node.customChainspecPath }} {{ .Values.node.customChainspecUrl }}
-              {{- if not .Values.node.forceDownloadChainspec }}
+                wget -O {{ .Values.customChainspecPath }} {{ .Values.customChainspecUrl }}
+              {{- if not .Values.forceDownloadChainspec }}
               fi
               {{- end }}
               {{- end }}
               {{- if .Values.relaychain.customChainspecUrl }}
-              {{- if not .Values.node.forceDownloadChainspec }}
+              {{- if not .Values.forceDownloadChainspec }}
               if [ ! -f {{ .Values.relaychain.chainspecPath }} ]; then
               {{- end }}
                 wget -O {{ .Values.relaychain.chainspecPath }} {{ .Values.relaychain.customChainspecUrl }}
-              {{- if not .Values.node.forceDownloadChainspec }}
+              {{- if not .Values.forceDownloadChainspec }}
               fi
               {{- end }}
               {{- end }}
@@ -68,8 +68,8 @@ spec:
             - -c
             - |
               set -eu
-              {{ .Values.node.command }} export-genesis-state --chain={{ .Values.node.chain }} > /chain-data/genesis-state
-              {{ .Values.node.command }} export-genesis-wasm --chain={{ .Values.node.chain }} > /chain-data/genesis-wasm
+              {{ .Values.command }} export-genesis-state --chain={{ .Values.chain }} > /chain-data/genesis-state
+              {{ .Values.command }} export-genesis-wasm --chain={{ .Values.chain }} > /chain-data/genesis-wasm
           volumeMounts:
             - mountPath: /chain-data
               name: chain-data
@@ -81,12 +81,12 @@ spec:
             - -c
             - |
               set -eu
-              {{- range $keys := .Values.node.accountKeys }}
+              {{- range $keys := .Values.accountKeys }}
               if [ ! -f /var/run/secrets/{{ .type }}/type ]; then
                  echo "Error: File /var/run/secrets/{{ .type }}/type does not exist"
                  exit 1
               fi
-              {{ $.Values.node.command }} key insert --chain {{ if $.Values.node.customChainspecUrl }}{{ $.Values.node.customChainspecPath }}{{ else }}{{ $.Values.node.chain }}{{ end }} \
+              {{ $.Values.command }} key insert --chain {{ if $.Values.customChainspecUrl }}{{ $.Values.customChainspecPath }}{{ else }}{{ $.Values.chain }}{{ end }} \
               --keystore-path /chain-data/keystore \
               --key-type $(cat /var/run/secrets/{{ .type }}/type) \
               --scheme $(cat /var/run/secrets/{{ .type }}/scheme) \
@@ -99,14 +99,14 @@ spec:
               if [ -f "${NODE_KEY_PATH}" ]; then
                 echo "Node key already exists, skipping node key generation"
               else
-                {{ .Values.node.command }} key generate-node-key --file ${NODE_KEY_PATH} \
+                {{ .Values.command }} key generate-node-key --file ${NODE_KEY_PATH} \
                 && echo "Generated node key into Keystore" \
                 || echo "Failed to generate and insert node key into Keystore."
               fi
           volumeMounts:
             - mountPath: /chain-data
               name: chain-data
-          {{- range $keys := .Values.node.accountKeys }}
+          {{- range $keys := .Values.accountKeys }}
             - mountPath: /var/run/secrets/{{ .type }}
               name: {{ .type }}
           {{- end }}
@@ -116,20 +116,20 @@ spec:
           imagePullPolicy: Always
           command:
             # parachain
-            - {{ .Values.node.command }}
+            - {{ .Values.command }}
             - --name={{ include "node.name" . }}
-            - --chain={{ if .Values.node.customChainspecUrl }}{{ .Values.node.customChainspecPath }}{{ else }}{{ .Values.node.chain }}{{ end }}
-            {{- if .Values.node.isCollator }}
+            - --chain={{ if .Values.customChainspecUrl }}{{ .Values.customChainspecPath }}{{ else }}{{ .Values.chain }}{{ end }}
+            {{- if .Values.isCollator }}
             - --collator
             {{- end }}
-            {{- if .Values.node.bootnodeAddr }}
-            - --bootnodes={{ .Values.node.bootnodeAddr }}
+            {{- if .Values.bootnodeAddr }}
+            - --bootnodes={{ .Values.bootnodeAddr }}
             {{- end }}
             {{- if .Values.remoteCluster }}
-            - --public-addr=/dns4/{{ include "node.name" . }}-{{ .Values.env }}.{{ .Values.domainZone }}/tcp/30333
+            - --public-addr=/dns4/{{ include "node.name" . }}-{{ .Values.environment }}.{{ .Values.domainZone }}/tcp/30333
             {{- end }}
-            {{- if .Values.node.customNodeKey }}
-            - --node-key={{ .Values.node.customNodeKey }}
+            {{- if .Values.customNodeKey }}
+            - --node-key={{ .Values.customNodeKey }}
             {{- else }}
             - --node-key-file=/chain-data/keystore/node-key
             {{- end }}
@@ -159,7 +159,7 @@ spec:
             - containerPort: 30333
             - containerPort: 40333
           env:
-            {{- range $key, $val := .Values.node.env }}
+            {{- range $key, $val := .Values.env }}
             - name: {{ $key }}
               value: {{ $val }}
             {{- end }}
@@ -170,7 +170,7 @@ spec:
               name: chain-data            
             - mountPath: /relaychain-data
               name: relaychain-data
-        {{- if .Values.node.parachainRegisterSidecar.enable }}
+        {{- if .Values.parachainRegisterSidecar.enable }}
         - name: parachain-register-sidecar
           image: mangatasolutions/parachain-register:1.0
           command: ['bash', '-c', 'node index.js']
@@ -180,15 +180,15 @@ spec:
             - name: WASM_FILE
               value: /chain-data/genesis-wasm
             - name: COLLATOR_ADDR
-              value: {{ .Values.node.parachainRegisterSidecar.relaychainHostAddr | quote }}
+              value: {{ .Values.parachainRegisterSidecar.relaychainHostAddr | quote }}
             - name: PARA_ID
-              value:  {{ .Values.node.parachainRegisterSidecar.parachainId | quote }}
+              value:  {{ .Values.parachainRegisterSidecar.parachainId | quote }}
           volumeMounts:
             - mountPath: /chain-data
               name: chain-data
         {{- end }}
       volumes:
-      {{- range $keys := .Values.node.accountKeys }}
+      {{- range $keys := .Values.accountKeys }}
         - name: {{ .type }}
           secret:
             secretName: {{ include "node.name" $ }}-{{ .type }}
@@ -202,7 +202,7 @@ spec:
         accessModes: ["ReadWriteOnce"]
         resources:
           requests:
-            storage: {{ .Values.node.storageSize }}
+            storage: {{ .Values.storageSize }}
     - metadata:
         name: relaychain-data
       spec:
