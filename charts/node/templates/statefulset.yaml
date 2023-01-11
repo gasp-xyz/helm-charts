@@ -147,6 +147,9 @@ spec:
             - --prometheus-external
             - --rpc-methods=Unsafe
             - --rpc-cors=all
+            {{- range .Values.flags }}
+            - {{ . }}
+            {{- end }}
             - --
             # relaychain
             {{- if .Values.relaychain.bootnodeAddr }}
@@ -155,6 +158,9 @@ spec:
             - --chain={{ .Values.relaychain.chainspecPath }}
             - --base-path=/relaychain-data
             - --execution=wasm
+            {{- range .Values.relaychain.flags }}
+            - {{ . }}
+            {{- end }}
           ports:
             - containerPort: 9716
             - containerPort: 9944
@@ -210,6 +216,12 @@ spec:
       spec:
         storageClassName: {{ .Values.storageClass }}
         accessModes: ["ReadWriteOnce"]
+        {{- if .Values.relaychain.kubernetesVolumeSnapshot }}
+        dataSource:
+          name: {{ .Values.relaychain.kubernetesVolumeSnapshot }}
+          kind: VolumeSnapshot
+          apiGroup: snapshot.storage.k8s.io
+        {{- end }}
         resources:
           requests:
             storage: {{ .Values.relaychain.storageSize }}
