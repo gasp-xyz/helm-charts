@@ -9,6 +9,7 @@ nameOverride: ''
 image: "parity/polkadot:v0.9.29"
 
 chain: rococo-local
+storageClass: standard-rwo
 storageSize: 10Gi
 env_vars:
   RUST_LOG: info
