@@ -5,8 +5,9 @@ metadata:
   name: {{ include "node.name" . }}
   labels: {{- include "node.labels" . | nindent 4 }}
   annotations:
-    kubernetes.io/ingress.class: nginx
     external-dns.alpha.kubernetes.io/hostname: {{ include "node.name" . }}-ws-{{ .Values.environment }}.{{ .Values.domainZone }}
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: 'true'
 spec:
   rules:
     - host: {{ include "node.name" . }}-ws-{{ .Values.environment }}.{{ .Values.domainZone }}
@@ -22,4 +23,5 @@ spec:
   tls:
     - hosts:
         - {{ include "node.name" . }}-ws-{{ .Values.environment }}.{{ .Values.domainZone }}
+      secretName: {{ include "node.name" . }}-tls
 {{- end }}
