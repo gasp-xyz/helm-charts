@@ -8,7 +8,7 @@ storageClass: standard-rwo
 command: /mangata/node
 
 ## Additional args to use
-flags: []
+extraArgs: []
 env:
   RUST_LOG: "info"
 
@@ -26,6 +26,7 @@ storageSize: 10Gi
 bootnodeAddr: ''
 forceDownloadChainspec: true
 chain: public-testnet
+allowUnsafeRpcMethods: true
 customChainspecPath: "/chain-data/chainspec.json"
 ## When defined, chainspec will be downloaded from the URL.
 ## By default `chain` variable value is passed to node's `--chain` parameter.
@@ -57,7 +58,7 @@ relaychain:
   ## Specify this variable if there is an existing VolumeSnapshot in the SAME namespace
   ## to copy relaychaindata from.
   # kubernetesVolumeSnapshot: ""
-  flags: []
+  extraArgs: []
 
 resources:
   requests:

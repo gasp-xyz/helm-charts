@@ -128,7 +128,7 @@ spec:
             - --bootnodes={{ .Values.bootnodeAddr }}
             {{- end }}
             {{- if .Values.remoteCluster }}
-            - --public-addr=/dns4/{{ include "node.name" . }}-{{ .Values.environment }}.{{ .Values.domainZone }}/tcp/30333
+            - --public-addr=/dns4/{{ include "node.name" . }}-p2p-{{ .Values.environment }}.{{ .Values.domainZone }}/tcp/30333
             {{- end }}
             {{- if .Values.customNodeKey }}
             - --node-key={{ .Values.customNodeKey }}
@@ -138,16 +138,18 @@ spec:
             - --execution=wasm
             - --keystore-path=/chain-data/keystore
             - --base-path=/chain-data
-            - --port=30333
-            - --ws-port=9944
             - --rpc-port=9933
-            - --prometheus-port=9716
+            - --ws-port=9944
+            - --port=30333
+            - --prometheus-external
+            - --prometheus-port=9615
             - --unsafe-ws-external
             - --unsafe-rpc-external
-            - --prometheus-external
-            - --rpc-methods=Unsafe
+            {{- if .Values.allowUnsafeRpcMethods }}
+            - --rpc-methods=unsafe 
+            {{- end }}
             - --rpc-cors=all
-            {{- range .Values.flags }}
+            {{- range .Values.extraArgs }}
             - {{ . }}
             {{- end }}
             - --
@@ -158,14 +160,24 @@ spec:
             - --chain={{ .Values.relaychain.chainspecPath }}
             - --base-path=/relaychain-data
             - --execution=wasm
-            {{- range .Values.relaychain.flags }}
+            - --prometheus-external
+            - --prometheus-port=9625
+            {{- range .Values.relaychain.extraArgs }}
             - {{ . }}
             {{- end }}
           ports:
-            - containerPort: 9716
+            - containerPort: 9933
+              name: http-rpc
             - containerPort: 9944
+              name: websocket-rpc
+            - containerPort: 9615
+              name: prometheus
+            - containerPort: 9625
+              name: prometheus-relaychain
             - containerPort: 30333
-            - containerPort: 40333
+              name: p2p
+            - containerPort: 30334
+              name: p2p-relaychain
           env:
             {{- range $key, $val := .Values.env }}
             - name: {{ $key }}
@@ -178,6 +190,12 @@ spec:
               name: chain-data            
             - mountPath: /relaychain-data
               name: relaychain-data
+          startupProbe:
+            failureThreshold: 30
+            periodSeconds: 10
+            httpGet:
+              path: /health
+              port: http-rpc
         {{- if .Values.parachainRegisterSidecar.enable }}
         - name: parachain-register-sidecar
           image: mangatasolutions/parachain-register:1.0
@@ -195,6 +213,7 @@ spec:
             - mountPath: /chain-data
               name: chain-data
         {{- end }}
+      terminationGracePeriodSeconds: 60
       volumes:
       {{- range $keys := .Values.accountKeys }}
         - name: {{ .type }}
