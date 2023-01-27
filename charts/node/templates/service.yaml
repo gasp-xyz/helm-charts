@@ -6,7 +6,6 @@ metadata:
     service: {{ include "node.name" . }}
 spec:
   type: ClusterIP
-  clusterIP: None
   ports:
     - port: 9933
       name: http-rpc
