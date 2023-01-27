@@ -173,7 +173,7 @@ spec:
             - containerPort: 9615
               name: prometheus
             - containerPort: 9625
-              name: prometheus-relaychain
+              name: prom-relaychain
             - containerPort: 30333
               name: p2p
             - containerPort: 30334

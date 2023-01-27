@@ -14,7 +14,7 @@ spec:
     - port: 9615
       name: prometheus
     - port: 9625
-      name: prometheus-relaychain
+      name: prom-relaychain
   selector:
     {{- include "node.selectorLabels" . | nindent 4 }}
     service: {{ include "node.name" . }}
