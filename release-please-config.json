@@ -1,0 +1,7 @@
+{
+  "release-type": "helm",
+  "packages": {
+    "charts/node": {},
+    "charts/relaychain-testnet": {}
+  }
+}
