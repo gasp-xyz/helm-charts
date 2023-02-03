@@ -27,6 +27,7 @@ bootnodeAddr: ''
 forceDownloadChainspec: true
 chain: public-testnet
 allowUnsafeRpcMethods: true
+telemetryUrls: []
 customChainspecPath: "/chain-data/chainspec.json"
 ## When defined, chainspec will be downloaded from the URL.
 ## By default `chain` variable value is passed to node's `--chain` parameter.
