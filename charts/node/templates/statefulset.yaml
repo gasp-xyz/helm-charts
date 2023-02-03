@@ -146,7 +146,8 @@ spec:
             - --unsafe-ws-external
             - --unsafe-rpc-external
             {{- range .Values.telemetryUrls }}
-            - --telemetry-url={{ . | quote }}
+            - --telemetry-url 
+            - {{ . | squote }}
             {{- end }}
             {{- if .Values.allowUnsafeRpcMethods }}
             - --rpc-methods=unsafe 
