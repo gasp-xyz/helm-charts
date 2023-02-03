@@ -158,6 +158,7 @@ spec:
             {{- end }}
             - --
             # relaychain
+            - --name={{ include "node.name" . }}
             {{- if .Values.relaychain.bootnodeAddr }}
             - --bootnodes={{ .Values.relaychain.bootnodeAddr }}
             {{- end }}
