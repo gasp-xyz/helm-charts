@@ -146,7 +146,7 @@ spec:
             - --unsafe-ws-external
             - --unsafe-rpc-external
             {{- range .Values.telemetryUrls }}
-            - --telemetry-url={{ . | squote }}
+            - --telemetry-url={{ . | quote }}
             {{- end }}
             {{- if .Values.allowUnsafeRpcMethods }}
             - --rpc-methods=unsafe 
@@ -161,7 +161,7 @@ spec:
             - --bootnodes={{ .Values.relaychain.bootnodeAddr }}
             {{- end }}
             {{- range .Values.telemetryUrls }}
-            - --telemetry-url={{ . | squote }}
+            - --telemetry-url={{ . | quote }}
             {{- end }}
             - --chain={{ .Values.relaychain.chainspecPath }}
             - --base-path=/relaychain-data
