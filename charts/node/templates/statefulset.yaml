@@ -162,7 +162,8 @@ spec:
             - --bootnodes={{ .Values.relaychain.bootnodeAddr }}
             {{- end }}
             {{- range .Values.telemetryUrls }}
-            - --telemetry-url={{ . | quote }}
+            - --telemetry-url 
+            - {{ . | squote }}
             {{- end }}
             - --chain={{ .Values.relaychain.chainspecPath }}
             - --base-path=/relaychain-data
