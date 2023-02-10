@@ -46,7 +46,7 @@ parachainRegisterSidecar:
   parachainId: 2110
 
 relaychain:
-  image: "parity/polkadot:v0.9.29"
+  image: "parity/polkadot:v0.9.37"
   chain: rococo-local
   bootnodeAddr: /dns/relaychain-alice/tcp/30333/p2p/12D3KooWEyoppNCUx8Yx66oV9fJnriXwCcXwDDUA2kj6vnc6iDEp
   storageSize: 10Gi
