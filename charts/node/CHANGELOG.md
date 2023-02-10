@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/mangata-finance/helm-charts/compare/node-v0.2.0...node-v0.3.0) (2023-02-10)
+
+
+### Features
+
+* update default relaychain image version to 37 in node chart ([a76e203](https://github.com/mangata-finance/helm-charts/commit/a76e203981127551a52dfb4237e7d2c83796b3ac))
+
 ## [0.2.0](https://github.com/mangata-finance/helm-charts/compare/node-v0.1.0...node-v0.2.0) (2023-02-03)
 
 
