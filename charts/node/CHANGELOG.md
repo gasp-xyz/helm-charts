@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/mangata-finance/helm-charts/compare/node-v0.3.0...node-v0.3.1) (2023-02-17)
+
+
+### Features
+
+* **MGX-241:** Add Helm chart reliability improvements  ([#3](https://github.com/mangata-finance/helm-charts/issues/3)) ([6985af1](https://github.com/mangata-finance/helm-charts/commit/6985af1d87650eda5b264be4387f0f244cc60af2))
+
 ## [0.3.0](https://github.com/mangata-finance/helm-charts/compare/node-v0.2.0...node-v0.3.0) (2023-02-10)
 
 
