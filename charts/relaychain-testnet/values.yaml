@@ -6,7 +6,7 @@ domainZone: mangata.online
 remoteCluster: false
 nameOverride: ''
 
-image: "parity/polkadot:v0.9.29"
+image: "parity/polkadot:v0.9.37"
 
 chain: rococo-local
 storageClass: standard-rwo
