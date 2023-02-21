@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/mangata-finance/helm-charts/compare/node-v0.3.1...node-v0.4.0) (2023-02-21)
+
+
+### Features
+
+* add podmonitoring resource support for metrics collection in GKE ([bc067ef](https://github.com/mangata-finance/helm-charts/commit/bc067ef633aac99207160d565230db0baa1c0247))
+
 ## [0.3.1](https://github.com/mangata-finance/helm-charts/compare/node-v0.3.0...node-v0.3.1) (2023-02-17)
 
 
