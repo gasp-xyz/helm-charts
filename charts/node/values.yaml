@@ -42,6 +42,8 @@ accountKeys:
   scheme: sr25519
   seed: //Alice
 
+enablePodMonitoringCollectors: false
+
 parachainRegisterSidecar:
   enable: false
   relaychainHostAddr: "ws://relaychain-alice:9944"
