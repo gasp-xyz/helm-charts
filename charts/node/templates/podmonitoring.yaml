@@ -6,8 +6,8 @@ metadata:
   labels: {{- include "node.labels" . | nindent 4 }}
 spec:
   selector:
-    {{- include "node.selectorLabels" . | nindent 4 }}
-    service: {{ include "node.name" . }}
+    matchLabels: {{- include "node.selectorLabels" . | nindent 6 }}
+      service: {{ include "node.name" . }}
   endpoints:
   - port: prometheus
     path: /metrics
