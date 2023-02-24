@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/mangata-finance/helm-charts/compare/node-v0.4.0...node-v0.4.1) (2023-02-24)
+
+
+### Bug Fixes
+
+* PodMonitoring selector config fix MGX-183 ([4fcf988](https://github.com/mangata-finance/helm-charts/commit/4fcf9889c24699733001507967f34d719a95d96d))
+
 ## [0.4.0](https://github.com/mangata-finance/helm-charts/compare/node-v0.3.1...node-v0.4.0) (2023-02-21)
 
 
