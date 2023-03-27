@@ -18,6 +18,64 @@ spec:
         service: {{ include "node.name" . }}
     spec:
       initContainers:
+        {{- if .Values.chainData.snapshotUrl }}
+        - name: download-chain-snapshot
+          image: {{ .Values.initContainer.image.repository }}:{{ .Values.initContainer.image.tag }}
+          command: [ "/bin/sh" ]
+          args:
+            - -c
+            - |
+              set -eu -o pipefail {{ if .Values.initContainer.debug }}-x{{ end }}
+              if [ -d "/chain-data/chains/${CHAIN_PATH}/db" ]; then
+                echo "Database directory already exists, skipping chain snapshot download"
+              else
+                echo "Downloading chain snapshot"
+                SNAPSHOT_URL="{{ .Values.chainData.snapshotUrl }}"
+                mkdir -p /chain-data/chains/${CHAIN_PATH}/db/
+                if [ "${SNAPSHOT_FORMAT}" == "lz4" ]; then
+                  wget -O - ${SNAPSHOT_URL} | lz4 -c -d - | tar -x -C /chain-data/chains/${CHAIN_PATH}/
+                else
+                  wget -O - ${SNAPSHOT_URL} | tar -x -C /chain-data/chains/${CHAIN_PATH}/db/
+                fi
+              fi
+          env:
+            - name: CHAIN_PATH
+              value: {{ default .Values.chain .Values.chainData.chainPath }}
+            - name: SNAPSHOT_FORMAT
+              value: {{ default "tar" .Values.chainData.snapshotFormat }}
+          volumeMounts:
+            - mountPath: /chain-data
+              name: chain-data
+        {{- end }}
+        {{- if .Values.relaychain.chainData.snapshotUrl }}
+        - name: download-relay-chain-snapshot
+          image: {{ .Values.initContainer.image.repository }}:{{ .Values.initContainer.image.tag }}
+          command: [ "/bin/sh" ]
+          args:
+            - -c
+            - |
+              set -eu -o pipefail {{ if .Values.initContainer.debug }}-x{{ end }}
+              if [ -d "/relaychain-data/chains/${RELAY_CHAIN_PATH}/db" ]; then
+                echo "Database directory already exists, skipping relay-chain snapshot download"
+              else
+                echo "Downloading relay-chain snapshot"
+                RELAY_SNAPSHOT_URL="{{ .Values.relaychain.chainData.snapshotUrl }}"
+                mkdir -p /relaychain-data/chains/${RELAY_CHAIN_PATH}/db
+                if [ "${RELAY_SNAPSHOT_FORMAT}" == "lz4" ]; then
+                  wget -O - ${RELAY_SNAPSHOT_URL} | lz4 -c -d - | tar -x -C /relaychain-data/chains/${RELAY_CHAIN_PATH}/
+                else
+                  wget -O - ${RELAY_SNAPSHOT_URL} | tar -x -C /relaychain-data/chains/${RELAY_CHAIN_PATH}/db/
+                fi
+              fi
+          env:
+            - name: RELAY_CHAIN_PATH
+              value: {{ default .Values.relaychain.chain .Values.relaychain.chainData.chainPath }}
+            - name: RELAY_SNAPSHOT_FORMAT
+              value: {{ default "tar" .Values.relaychain.chainData.snapshotFormat }}
+          volumeMounts:
+            - mountPath: /relaychain-data
+              name: relaychain-data
+        {{- end }}
         {{- if or .Values.customChainspecUrl .Values.relaychain.customChainspecUrl}}
         - name: download-chainspec
           image: {{ .Values.initContainer.image.repository }}:{{ .Values.initContainer.image.tag }}
@@ -244,9 +302,9 @@ spec:
       spec:
         storageClassName: {{ .Values.storageClass }}
         accessModes: ["ReadWriteOnce"]
-        {{- if .Values.relaychain.kubernetesVolumeSnapshot }}
+        {{- if .Values.relaychain.chainData.kubernetesVolumeSnapshot }}
         dataSource:
-          name: {{ .Values.relaychain.kubernetesVolumeSnapshot }}
+          name: {{ .Values.relaychain.chainData.kubernetesVolumeSnapshot }}
           kind: VolumeSnapshot
           apiGroup: snapshot.storage.k8s.io
         {{- end }}
