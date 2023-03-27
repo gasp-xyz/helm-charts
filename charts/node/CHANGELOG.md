@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.2](https://github.com/mangata-finance/helm-charts/compare/node-v0.4.1...node-v0.4.2) (2023-03-27)
+
+
+### Features
+
+* Add chain data download init containers MGX-425 ([#10](https://github.com/mangata-finance/helm-charts/issues/10)) ([c9c84e6](https://github.com/mangata-finance/helm-charts/commit/c9c84e679814b07572883004ec3e011b095032a1))
+
 ## [0.4.1](https://github.com/mangata-finance/helm-charts/compare/node-v0.4.0...node-v0.4.1) (2023-02-24)
 
 
