@@ -134,6 +134,7 @@ spec:
             - mountPath: /chain-data
               name: chain-data
         {{- end }}
+        {{- if .Values.accountKeys }}
         - name: inject-keys
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           command: ["/bin/bash"]
@@ -170,6 +171,7 @@ spec:
             - mountPath: /var/run/secrets/{{ .type }}
               name: {{ .type }}
           {{- end }}
+        {{- end }}
       containers:
         - name: node
           image: "{{ .Values.image.repository}}:{{ .Values.image.tag }}"
@@ -224,7 +226,7 @@ spec:
             - --telemetry-url 
             - {{ . | squote }}
             {{- end }}
-            - --chain={{ .Values.relaychain.chainspecPath }}
+            - --chain={{ if .Values.relaychain.customChainspecUrl }}{{ .Values.relaychain.chainspecPath }}{{ else }}{{ .Values.relaychain.chain }}{{ end }}
             - --base-path=/relaychain-data
             - --execution=wasm
             - --prometheus-external
@@ -281,12 +283,14 @@ spec:
               name: chain-data
         {{- end }}
       terminationGracePeriodSeconds: 60
+      {{- if .Values.accountKeys }}
       volumes:
       {{- range $keys := .Values.accountKeys }}
         - name: {{ .type }}
           secret:
             secretName: {{ include "node.name" $ }}-{{ .type }}
             defaultMode: 0400
+      {{- end }}
       {{- end }}
   volumeClaimTemplates:
     - metadata:
