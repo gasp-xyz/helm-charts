@@ -226,7 +226,7 @@ spec:
             - --telemetry-url 
             - {{ . | squote }}
             {{- end }}
-            - --chain={{ if .Values.relaychain.customChainspecUrl }}{{ .Values.relaychain.chainspecPath }}{{ else }}{{ .Values.relaychain.chain }}{{ end }}
+            - --chain={{ if or .Values.relaychain.forceUseCustomChainspecPath .Values.relaychain.customChainspecUrl }}{{ .Values.relaychain.chainspecPath }}{{ else }}{{ .Values.relaychain.chain }}{{ end }}
             - --base-path=/relaychain-data
             - --execution=wasm
             - --prometheus-external

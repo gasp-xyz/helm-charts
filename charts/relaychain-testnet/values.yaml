@@ -13,6 +13,8 @@ storageClass: standard-rwo
 storageSize: 10Gi
 env_vars:
   RUST_LOG: info
+aliceExtraArgs: []
+bobExtraArgs: []
 
 resources:
   requests:
