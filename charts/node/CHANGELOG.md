@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.3](https://github.com/mangata-finance/helm-charts/compare/node-v0.4.2...node-v0.4.3) (2023-04-03)
+
+
+### Bug Fixes
+
+* Fix chart configs to be compatible with fungible envs MGX-372 ([#12](https://github.com/mangata-finance/helm-charts/issues/12)) ([8fd85e4](https://github.com/mangata-finance/helm-charts/commit/8fd85e4554a2e963f79a4004fa024cef1de4017a))
+
 ## [0.4.2](https://github.com/mangata-finance/helm-charts/compare/node-v0.4.1...node-v0.4.2) (2023-03-27)
 
 

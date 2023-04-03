@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/mangata-finance/helm-charts/compare/relaychain-testnet-v0.3.0...relaychain-testnet-v0.3.1) (2023-04-03)
+
+
+### Bug Fixes
+
+* Fix chart configs to be compatible with fungible envs MGX-372 ([#12](https://github.com/mangata-finance/helm-charts/issues/12)) ([8fd85e4](https://github.com/mangata-finance/helm-charts/commit/8fd85e4554a2e963f79a4004fa024cef1de4017a))
+
 ## [0.3.0](https://github.com/mangata-finance/helm-charts/compare/relaychain-testnet-v0.2.0...relaychain-testnet-v0.3.0) (2023-02-10)
 
 
