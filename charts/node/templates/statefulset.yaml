@@ -226,7 +226,7 @@ spec:
             - --telemetry-url 
             - {{ . | squote }}
             {{- end }}
-            - --chain={{ if .Values.relaychain.customChainspecUrl }}{{ .Values.relaychain.chainspecPath }}{{ else }}{{ .Values.relaychain.chain }}{{ end }}
+            - --chain={{ if or .Values.relaychain.forceUseCustomChainspecPath .Values.relaychain.customChainspecUrl }}{{ .Values.relaychain.chainspecPath }}{{ else }}{{ .Values.relaychain.chain }}{{ end }}
             - --base-path=/relaychain-data
             - --execution=wasm
             - --prometheus-external
@@ -267,8 +267,11 @@ spec:
               port: http-rpc
         {{- if .Values.parachainRegisterSidecar.enable }}
         - name: parachain-register-sidecar
-          image: mangatasolutions/parachain-register:1.0
-          command: ['bash', '-c', 'node index.js']
+          image: {{ .Values.parachainRegisterSidecar.image | quote }}
+          imagePullPolicy: Always
+          {{- if .Values.parachainRegisterSidecar.command }}
+          args: {{ .Values.parachainRegisterSidecar.command }}
+          {{- end }}
           env:
             - name: STATE_FILE
               value: /chain-data/genesis-state

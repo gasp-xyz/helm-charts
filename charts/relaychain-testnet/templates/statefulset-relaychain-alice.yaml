@@ -44,10 +44,16 @@ spec:
             - --prometheus-external
             - --prometheus-port=9616
             - --node-key=0000000000000000000000000000000000000000000000000000000000000001
+             {{- if .Values.basePath }}
+            - --base-path={{ .Values.basePath }}
+            {{- end }}
             {{- if .Values.remoteCluster }}
             - "--public-addr=/dns4/{{ $name }}-{{ .Values.env }}.{{ .Values.domainZone }}/tcp/30333"
             {{- end }}
-            - "--alice"
+            - --alice
+            {{- range .Values.aliceExtraArgs }}
+            - {{ . }}
+            {{- end }}
           ports:
             - containerPort: 9616
             - containerPort: 9944

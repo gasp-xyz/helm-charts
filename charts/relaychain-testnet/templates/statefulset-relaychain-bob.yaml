@@ -45,6 +45,12 @@ spec:
             - --prometheus-port=9616
             - --bootnodes=/dns/relaychain-alice/tcp/30333/p2p/12D3KooWEyoppNCUx8Yx66oV9fJnriXwCcXwDDUA2kj6vnc6iDEp
             - --bob
+             {{- if .Values.basePath }}
+            - --base-path={{ .Values.basePath }}
+            {{- end }}
+            {{- range .Values.bobExtraArgs }}
+            - {{ . }}
+            {{- end }}
           ports:
             - containerPort: 9616
             - containerPort: 9944

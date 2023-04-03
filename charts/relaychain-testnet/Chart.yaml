@@ -3,4 +3,4 @@ name: relaychain-testnet
 description: A Helm chart for deploying relaychain test network
 type: application
 version: 0.3.0
-appVersion: v0.9.29
+appVersion: v0.9.37
