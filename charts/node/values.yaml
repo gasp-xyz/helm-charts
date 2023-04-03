@@ -53,8 +53,10 @@ enablePodMonitoringCollectors: false
 
 parachainRegisterSidecar:
   enable: false
-  relaychainHostAddr: "ws://relaychain-alice:9944"
+  image: mangatasolutions/parachain-register:1.1
+  relaychainHostAddr: ws://relaychain-alice:9944
   parachainId: 2110
+  command: []
 
 relaychain:
   image: "parity/polkadot:v0.9.37"
