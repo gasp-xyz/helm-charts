@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.4](https://github.com/mangata-finance/helm-charts/compare/node-v0.4.3...node-v0.4.4) (2023-04-04)
+
+
+### Features
+
+* Add capability to not overwrite existing generated chainspec MGX-372 ([#14](https://github.com/mangata-finance/helm-charts/issues/14)) ([9a8b307](https://github.com/mangata-finance/helm-charts/commit/9a8b307b3b96242f347ad5eb27abc38f6684eff8))
+
 ## [0.4.3](https://github.com/mangata-finance/helm-charts/compare/node-v0.4.2...node-v0.4.3) (2023-04-03)
 
 
