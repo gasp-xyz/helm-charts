@@ -16,6 +16,8 @@ env_vars:
 aliceExtraArgs: []
 bobExtraArgs: []
 basePath: ''
+chainspecPath: /etc/mangata/local.json
+forceGenerateChainspec: false
 
 resources:
   requests:

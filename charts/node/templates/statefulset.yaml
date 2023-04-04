@@ -115,7 +115,15 @@ spec:
           command: ["/bin/bash"]
           args: 
             - -c
-            - /usr/bin/polkadot build-spec --chain={{ .Values.relaychain.chain }} --disable-default-bootnode --raw > {{ .Values.relaychain.chainspecPath }}
+            - |
+              set -eux -o pipefail
+              {{- if not .Values.relaychain.forceGenerateChainspec }}
+              if [ ! -f {{ .Values.relaychain.chainspecPath }} ]; then
+              {{- end }}
+                /usr/bin/polkadot build-spec --chain={{ .Values.relaychain.chain }} --disable-default-bootnode --raw > {{ .Values.relaychain.chainspecPath }}
+              {{- if not .Values.relaychain.forceGenerateChainspec }}
+              fi
+              {{- end }}
           volumeMounts:
             - mountPath: /relaychain-data
               name: relaychain-data

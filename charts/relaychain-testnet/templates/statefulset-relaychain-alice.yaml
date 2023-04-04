@@ -21,10 +21,18 @@ spec:
       initContainers:
         - name: chainspec-generator
           image: {{ .Values.image | quote }}
-          command: 
-            - "/bin/bash"
-            - "-c" 
-            - "/usr/bin/polkadot build-spec --chain={{ .Values.chain }} --disable-default-bootnode --raw > /etc/mangata/local.json"
+          command: ["/bin/bash"]
+          args: 
+            - -c
+            - |
+              set -eux -o pipefail
+              {{- if not .Values.forceGenerateChainspec }}
+              if [ ! -f {{ .Values.chainspecPath }} ]; then
+              {{- end }}
+                /usr/bin/polkadot build-spec --chain={{ .Values.chain }} --disable-default-bootnode --raw > {{ .Values.chainspecPath }}
+              {{- if not .Values.forceGenerateChainspec }}
+              fi
+              {{- end }}
           volumeMounts:
             - mountPath: /etc/mangata/
               name: node-chainspec-volume
@@ -33,7 +41,7 @@ spec:
           image: {{ .Values.image | quote }}
           command:
             - /usr/bin/polkadot
-            - --chain=/etc/mangata/local.json
+            - --chain={{ .Values.chainspecPath }}
             - --validator
             - --port=30333
             - --ws-port=9944
