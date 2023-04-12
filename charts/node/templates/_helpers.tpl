@@ -18,6 +18,7 @@ Common labels
 {{ include "node.selectorLabels" . }}
 heritage: {{ .Release.Service }}
 role: {{ .Values.role }}
+component: parachain-node
 {{- end }}
 
 {{/*
@@ -25,5 +26,4 @@ Selector labels
 */}}
 {{- define "node.selectorLabels" -}}
 application: {{ include "node.name" . }}
-component: parachain-node
 {{- end }}
