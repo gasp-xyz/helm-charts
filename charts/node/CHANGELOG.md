@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.6](https://github.com/mangata-finance/helm-charts/compare/node-v0.4.5...node-v0.4.6) (2023-04-27)
+
+
+### Features
+
+* Kusama environment support updates MGX-272 ([#18](https://github.com/mangata-finance/helm-charts/issues/18)) ([91a7f2f](https://github.com/mangata-finance/helm-charts/commit/91a7f2f263780b04ebe61a260981b28c2eef4478))
+
 ## [0.4.5](https://github.com/mangata-finance/helm-charts/compare/node-v0.4.4...node-v0.4.5) (2023-04-27)
 
 
