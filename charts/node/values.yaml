@@ -4,6 +4,7 @@
 environment: local
 domainZone: mangata.online
 remoteCluster: false
+enableWsIngress: true
 storageClass: standard-rwo
 command: /mangata/node
 
