@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.5](https://github.com/mangata-finance/helm-charts/compare/node-v0.4.4...node-v0.4.5) (2023-04-27)
+
+
+### Features
+
+* Add role label for nodes MGX-444 ([#16](https://github.com/mangata-finance/helm-charts/issues/16)) ([942723b](https://github.com/mangata-finance/helm-charts/commit/942723bd7c16f724ee9dadad69f434fe4fd98079))
+
 ## [0.4.4](https://github.com/mangata-finance/helm-charts/compare/node-v0.4.3...node-v0.4.4) (2023-04-04)
 
 
