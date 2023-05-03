@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/mangata-finance/helm-charts/compare/node-v0.4.6...node-v0.5.0) (2023-05-03)
+
+
+### Features
+
+* add conditional startup probe enablement MGX-272 ([d1a975a](https://github.com/mangata-finance/helm-charts/commit/d1a975a8f3192d05287238a21a21bdd2e68582c5))
+
 ## [0.4.6](https://github.com/mangata-finance/helm-charts/compare/node-v0.4.5...node-v0.4.6) (2023-04-27)
 
 
