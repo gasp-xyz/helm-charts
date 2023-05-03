@@ -267,12 +267,14 @@ spec:
               name: chain-data            
             - mountPath: /relaychain-data
               name: relaychain-data
+          {{- if .Values.enableStartupProbe }}
           startupProbe:
             failureThreshold: 30
             periodSeconds: 10
             httpGet:
               path: /health
               port: http-rpc
+          {{- end }}
         {{- if .Values.parachainRegisterSidecar.enable }}
         - name: parachain-register-sidecar
           image: {{ .Values.parachainRegisterSidecar.image | quote }}

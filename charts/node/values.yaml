@@ -24,6 +24,7 @@ image:
 isCollator: true
 # Role gets assigned to resources as a label
 role: full
+enableStartupProbe: true
 storageSize: 10Gi
 ## Example: `bootnodeAddr: /dns4/node-01/tcp/30333/p2p/12D3KooWSCufgHzV4fCwRijfH2k3abrpAJxTKxEvN1FDuRXA2U9x`
 bootnodeAddr: ''
