@@ -5,6 +5,7 @@ environment: local
 domainZone: mangata.online
 remoteCluster: false
 enableWsIngress: true
+ingressClassName: nginx
 storageClass: standard-rwo
 command: /mangata/node
 
@@ -53,7 +54,7 @@ chainData:
 #   scheme: sr25519
 #   seed: //Alice
 
-enablePodMonitoringCollectors: false
+enableServiceMonitorCollectors: false
 
 parachainRegisterSidecar:
   enable: false
