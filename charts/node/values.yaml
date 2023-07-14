@@ -8,6 +8,7 @@ enableWsIngress: true
 ingressClassName: nginx
 storageClass: standard-rwo
 command: /mangata/node
+nodeNameOverride: ''
 
 ## Additional args to use
 extraArgs: []
@@ -53,6 +54,9 @@ chainData:
 # - type: aura
 #   scheme: sr25519
 #   seed: //Alice
+keystoreMountInMemoryEnabled: true
+keystoreMountInMemorySizeLimit: 10Mi
+keystoreStorageSize: 10Gi
 
 enableServiceMonitorCollectors: false
 
