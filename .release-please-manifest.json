@@ -1,4 +1,4 @@
 {
-  "charts/node": "0.5.0",
-  "charts/relaychain-testnet": "0.3.2"
+  "charts/node": "1.0.0",
+  "charts/relaychain-testnet": "1.0.0"
 }

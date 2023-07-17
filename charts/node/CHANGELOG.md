@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.0.0](https://github.com/mangata-finance/helm-charts/compare/node-v0.5.0...node-v1.0.0) (2023-07-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* Major changes to keystore storage and monitoring configs MGX-445
+
+### Features
+
+* Major changes to keystore storage and monitoring configs MGX-445 ([e7774f2](https://github.com/mangata-finance/helm-charts/commit/e7774f24765b256b381ad8491b52b0e7dcc6f1e7))
+* Update Helm charts to support new monitoring and update keystore mounting approach MGX-445 ([#21](https://github.com/mangata-finance/helm-charts/issues/21)) ([3ad658c](https://github.com/mangata-finance/helm-charts/commit/3ad658c456879ccc068dc2bc23f13fe98f597eb5))
+
 ## [0.5.0](https://github.com/mangata-finance/helm-charts/compare/node-v0.4.6...node-v0.5.0) (2023-05-03)
 
 
