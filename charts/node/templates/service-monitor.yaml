@@ -1,6 +1,6 @@
-{{- if .Values.enablePodMonitoringCollectors }}
-apiVersion: monitoring.googleapis.com/v1
-kind: PodMonitoring
+{{- if .Values.enableServiceMonitorCollectors }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
 metadata:
   name: {{ include "node.name" . }}
   labels: {{- include "node.labels" . | nindent 4 }}
@@ -9,10 +9,12 @@ spec:
     matchLabels: {{- include "node.selectorLabels" . | nindent 6 }}
       service: {{ include "node.name" . }}
   endpoints:
-  - port: prometheus
+  - targetPort: prometheus
     path: /metrics
-    interval: 30s  
-  - port: prom-relaychain
+    honorLabels: true
+    interval: 30s
+  - targetPort: prom-relaychain
     path: /metrics
+    honorLabels: true
     interval: 30s
 {{- end }}
