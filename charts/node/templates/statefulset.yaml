@@ -156,7 +156,7 @@ spec:
                  exit 1
               fi
               {{ $.Values.command }} key insert --chain {{ if $.Values.customChainspecUrl }}{{ $.Values.customChainspecPath }}{{ else }}{{ $.Values.chain }}{{ end }} \
-              --keystore-path /chain-data/keystore \
+              --keystore-path /keystore \
               --key-type $(cat /var/run/secrets/{{ .type }}/type) \
               --scheme $(cat /var/run/secrets/{{ .type }}/scheme) \
               --suri /var/run/secrets/{{ .type }}/seed \
@@ -164,7 +164,7 @@ spec:
               || echo "Failed to insert key {{ .type }} into Keystore."
               {{- end }}
               {{- /* Generate node key`*/}}
-              NODE_KEY_PATH="/chain-data/keystore/node-key"
+              NODE_KEY_PATH="/keystore/node-key"
               if [ -f "${NODE_KEY_PATH}" ]; then
                 echo "Node key already exists, skipping node key generation"
               else
@@ -173,8 +173,8 @@ spec:
                 || echo "Failed to generate and insert node key into Keystore."
               fi
           volumeMounts:
-            - mountPath: /chain-data
-              name: chain-data
+            - mountPath: /keystore
+              name: chain-keystore
           {{- range $keys := .Values.accountKeys }}
             - mountPath: /var/run/secrets/{{ .type }}
               name: {{ .type }}
@@ -187,7 +187,7 @@ spec:
           command:
             # parachain
             - {{ .Values.command }}
-            - --name={{ include "node.name" . }}
+            - --name={{ default (include "node.name" .) .Values.nodeNameOverride }}
             - --chain={{ if .Values.customChainspecUrl }}{{ .Values.customChainspecPath }}{{ else }}{{ .Values.chain }}{{ end }}
             {{- if .Values.isCollator }}
             - --collator
@@ -201,10 +201,10 @@ spec:
             {{- if .Values.customNodeKey }}
             - --node-key={{ .Values.customNodeKey }}
             {{- else }}
-            - --node-key-file=/chain-data/keystore/node-key
+            - --node-key-file=/keystore/node-key
             {{- end }}
             - --execution=wasm
-            - --keystore-path=/chain-data/keystore
+            - --keystore-path=/keystore
             - --base-path=/chain-data
             - --rpc-port=9933
             - --ws-port=9944
@@ -226,7 +226,7 @@ spec:
             {{- end }}
             - --
             # relaychain
-            - --name={{ include "node.name" . }}
+            - --name={{ default (include "node.name" .) .Values.nodeNameOverride }}
             {{- if .Values.relaychain.bootnodeAddr }}
             - --bootnodes={{ .Values.relaychain.bootnodeAddr }}
             {{- end }}
@@ -265,6 +265,8 @@ spec:
           volumeMounts:
             - mountPath: /chain-data
               name: chain-data            
+            - mountPath: /keystore
+              name: chain-keystore
             - mountPath: /relaychain-data
               name: relaychain-data
           {{- if .Values.enableStartupProbe }}
@@ -296,7 +298,7 @@ spec:
               name: chain-data
         {{- end }}
       terminationGracePeriodSeconds: 60
-      {{- if .Values.accountKeys }}
+      {{- if or .Values.accountKeys .Values.keystoreMountInMemoryEnabled }}
       volumes:
       {{- range $keys := .Values.accountKeys }}
         - name: {{ .type }}
@@ -305,6 +307,14 @@ spec:
             defaultMode: 0400
       {{- end }}
       {{- end }}
+      {{- if .Values.keystoreMountInMemoryEnabled }}
+        - name: chain-keystore
+          emptyDir:
+            medium: "Memory"
+            {{- if and (.Values.keystoreMountInMemorySizeLimit) (semverCompare ">=1.22-0" .Capabilities.KubeVersion.GitVersion) }}
+            sizeLimit: {{ .Values.keystoreMountInMemorySizeLimit }}
+            {{- end }}
+       {{- end }}
   volumeClaimTemplates:
     - metadata:
         name: chain-data
@@ -328,3 +338,13 @@ spec:
         resources:
           requests:
             storage: {{ .Values.relaychain.storageSize }}
+    {{- if not .Values.keystoreMountInMemoryEnabled }}
+    - metadata:
+        name: chain-keystore
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: {{ .Values.storageClass }}
+        resources:
+          requests:
+            storage: {{ .Values.keystoreStorageSize }}
+    {{- end }}
