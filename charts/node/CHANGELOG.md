@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/mangata-finance/helm-charts/compare/node-v1.1.0...node-v1.1.1) (2023-07-24)
+
+
+### Bug Fixes
+
+* Fix author key injection MGX-533 ([a55e504](https://github.com/mangata-finance/helm-charts/commit/a55e5042a1e365fb14d86a7edb8a889de626b3e9))
+
 ## [1.1.0](https://github.com/mangata-finance/helm-charts/compare/node-v1.0.0...node-v1.1.0) (2023-07-24)
 
 
