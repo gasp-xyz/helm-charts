@@ -173,6 +173,8 @@ spec:
                 || echo "Failed to generate and insert node key into Keystore."
               fi
           volumeMounts:
+            - mountPath: /chain-data
+              name: chain-data
             - mountPath: /keystore
               name: chain-keystore
           {{- range $keys := .Values.accountKeys }}
