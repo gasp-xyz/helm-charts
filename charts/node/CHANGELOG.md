@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/mangata-finance/helm-charts/compare/node-v1.0.0...node-v1.1.0) (2023-07-24)
+
+
+### Features
+
+* Add tolerations and affinity configs MGX-533 ([366139c](https://github.com/mangata-finance/helm-charts/commit/366139cf00f761c2a8c1483bd85edc7a142d3b83))
+
 ## [1.0.0](https://github.com/mangata-finance/helm-charts/compare/node-v0.5.0...node-v1.0.0) (2023-07-17)
 
 
