@@ -297,7 +297,19 @@ spec:
             - mountPath: /chain-data
               name: chain-data
         {{- end }}
-      terminationGracePeriodSeconds: 60
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+      {{- toYaml . | nindent 10 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- if or .Values.accountKeys .Values.keystoreMountInMemoryEnabled }}
       volumes:
       {{- range $keys := .Values.accountKeys }}

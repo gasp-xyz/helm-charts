@@ -97,6 +97,15 @@ resources:
     cpu: 1000m
     memory: 2Gi
 
+# -- Define which Nodes the Pods are scheduled on
+nodeSelector: {}
+# -- Grace termination period of the Pod
+terminationGracePeriodSeconds: 60
+# -- Tolerations for use with node taints
+tolerations: []
+# -- Assign custom affinity rules
+affinity: {}
+
 initContainer:
   image:
     repository: paritytech/lz4
