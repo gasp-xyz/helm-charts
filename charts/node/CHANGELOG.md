@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/mangata-finance/helm-charts/compare/node-v1.1.1...node-v1.2.0) (2023-07-27)
+
+
+### Features
+
+* Allow to use Kubernetes Volume Clone and Snapshots to provision new nodes MGX-533 ([94de3d9](https://github.com/mangata-finance/helm-charts/commit/94de3d9153aa1f505f827498c73aa305ad9b87bc))
+
 ## [1.1.1](https://github.com/mangata-finance/helm-charts/compare/node-v1.1.0...node-v1.1.1) (2023-07-24)
 
 
