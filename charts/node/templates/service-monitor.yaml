@@ -8,6 +8,7 @@ spec:
   selector:
     matchLabels: {{- include "node.selectorLabels" . | nindent 6 }}
       service: {{ include "node.name" . }}
+      isP2P: 'false'
   endpoints:
   - targetPort: prometheus
     path: /metrics

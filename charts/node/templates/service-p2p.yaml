@@ -8,6 +8,7 @@ metadata:
   {{- end }}
   labels: {{- include "node.labels" . | nindent 4 }}
     service: {{ include "node.name" . }}
+    isP2P: 'true'
 spec:
   type: LoadBalancer
   externalTrafficPolicy: Local

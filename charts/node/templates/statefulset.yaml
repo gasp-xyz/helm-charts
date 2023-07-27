@@ -335,6 +335,17 @@ spec:
       spec:
         storageClassName: {{ .Values.storageClass }}
         accessModes: ["ReadWriteOnce"]
+        {{- if or .Values.chainData.kubernetesVolumeSnapshot .Values.chainData.kubernetesVolumeToClone }}
+        dataSource:
+          {{- if .Values.chainData.kubernetesVolumeSnapshot }}
+          name: {{ .Values.chainData.kubernetesVolumeSnapshot }}
+          kind: VolumeSnapshot
+          apiGroup: snapshot.storage.k8s.io
+          {{- else }}
+          name: {{ .Values.chainData.kubernetesVolumeToClone }}
+          kind: PersistentVolumeClaim
+          {{- end }}
+        {{- end }}
         resources:
           requests:
             storage: {{ .Values.storageSize }}
@@ -343,11 +354,16 @@ spec:
       spec:
         storageClassName: {{ .Values.storageClass }}
         accessModes: ["ReadWriteOnce"]
-        {{- if .Values.relaychain.chainData.kubernetesVolumeSnapshot }}
+        {{- if or .Values.relaychain.chainData.kubernetesVolumeSnapshot .Values.relaychain.chainData.kubernetesVolumeToClone }}
         dataSource:
+          {{- if .Values.relaychain.chainData.kubernetesVolumeSnapshot }}
           name: {{ .Values.relaychain.chainData.kubernetesVolumeSnapshot }}
           kind: VolumeSnapshot
           apiGroup: snapshot.storage.k8s.io
+          {{- else }}
+          name: {{ .Values.relaychain.chainData.kubernetesVolumeToClone }}
+          kind: PersistentVolumeClaim
+          {{- end }}
         {{- end }}
         resources:
           requests:
