@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/mangata-finance/helm-charts/compare/node-v1.2.0...node-v1.2.1) (2023-08-14)
+
+
+### Bug Fixes
+
+* missing relaychain node-key config which introduced conflict not allowing one of the collators to propagate blocks MGX-620 ([41efbcf](https://github.com/mangata-finance/helm-charts/commit/41efbcf5b9d1ed9530c5b07c9e16a0c7b433bbdc))
+
 ## [1.2.0](https://github.com/mangata-finance/helm-charts/compare/node-v1.1.1...node-v1.2.0) (2023-07-27)
 
 
