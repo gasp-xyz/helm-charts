@@ -172,11 +172,21 @@ spec:
                 && echo "Generated node key into Keystore" \
                 || echo "Failed to generate and insert node key into Keystore."
               fi
+              RELAYCHAIN_NODE_KEY_PATH="/relaychain-keystore/node-key"
+              if [ -f "${RELAYCHAIN_NODE_KEY_PATH}" ]; then
+                echo "Relaychain node key already exists, skipping node key generation"
+              else
+                {{ .Values.command }} key generate-node-key --file ${RELAYCHAIN_NODE_KEY_PATH} \
+                && echo "Generated relaychain node key into relaychain Keystore" \
+                || echo "Failed to generate and insert node key into relaychain Keystore."
+              fi
           volumeMounts:
             - mountPath: /chain-data
               name: chain-data
             - mountPath: /keystore
               name: chain-keystore
+            - mountPath: /relaychain-keystore
+              name: relaychain-keystore
           {{- range $keys := .Values.accountKeys }}
             - mountPath: /var/run/secrets/{{ .type }}
               name: {{ .type }}
@@ -238,6 +248,12 @@ spec:
             {{- end }}
             - --chain={{ if or .Values.relaychain.forceUseCustomChainspecPath .Values.relaychain.customChainspecUrl }}{{ .Values.relaychain.chainspecPath }}{{ else }}{{ .Values.relaychain.chain }}{{ end }}
             - --base-path=/relaychain-data
+            - --keystore-path=/relaychain-keystore
+            {{- if .Values.relaychainCustomNodeKey }}
+            - --node-key={{ .Values.relaychainCustomNodeKey }}
+            {{- else }}
+            - --node-key-file=/relaychain-keystore/node-key
+            {{- end }}
             - --execution=wasm
             - --prometheus-external
             - --prometheus-port=9625
@@ -271,6 +287,8 @@ spec:
               name: chain-keystore
             - mountPath: /relaychain-data
               name: relaychain-data
+            - mountPath: /relaychain-keystore
+              name: relaychain-keystore
           {{- if .Values.enableStartupProbe }}
           startupProbe:
             failureThreshold: 30
@@ -328,6 +346,12 @@ spec:
             {{- if and (.Values.keystoreMountInMemorySizeLimit) (semverCompare ">=1.22-0" .Capabilities.KubeVersion.GitVersion) }}
             sizeLimit: {{ .Values.keystoreMountInMemorySizeLimit }}
             {{- end }}
+        - name: relaychain-keystore
+          emptyDir:
+            medium: "Memory"
+            {{- if and (.Values.keystoreMountInMemorySizeLimit) (semverCompare ">=1.22-0" .Capabilities.KubeVersion.GitVersion) }}
+            sizeLimit: {{ .Values.keystoreMountInMemorySizeLimit }}
+            {{- end }}
        {{- end }}
   volumeClaimTemplates:
     - metadata:
@@ -371,6 +395,14 @@ spec:
     {{- if not .Values.keystoreMountInMemoryEnabled }}
     - metadata:
         name: chain-keystore
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: {{ .Values.storageClass }}
+        resources:
+          requests:
+            storage: {{ .Values.keystoreStorageSize }}
+    - metadata:
+        name: relaychain-keystore
       spec:
         accessModes: ["ReadWriteOnce"]
         storageClassName: {{ .Values.storageClass }}

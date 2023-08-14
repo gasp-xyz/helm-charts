@@ -54,6 +54,7 @@ chainData:
 ## generated one that is created and persisted on first run of the node
 ##
 # customNodeKey:
+# relaychainCustomNodeKey:
 # accountKeys:
 # - type: aura
 #   scheme: sr25519
