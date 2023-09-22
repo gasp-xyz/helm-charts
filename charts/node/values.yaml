@@ -119,3 +119,6 @@ initContainer:
     repository: paritytech/lz4
     tag: latest
   debug: false
+
+podAnnotations: 
+  'fluentbit.io/parser': 'substrate'

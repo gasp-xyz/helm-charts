@@ -13,6 +13,12 @@ spec:
   serviceName: {{ include "node.name" . }}
   template:
     metadata:
+      {{- if .Values.podAnnotations }}
+      annotations:
+      {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- end }}
       labels:
         {{- include "node.labels" . | nindent 8 }}
         service: {{ include "node.name" . }}
