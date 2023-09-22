@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/mangata-finance/helm-charts/compare/node-v1.2.1...node-v1.3.0) (2023-09-22)
+
+
+### Features
+
+* Update statefulset template to include pod annotations MGX-433 ([3610f7f](https://github.com/mangata-finance/helm-charts/commit/3610f7fc3e96023cd9ca5f0110d6ced7b9e74072))
+
 ## [1.2.1](https://github.com/mangata-finance/helm-charts/compare/node-v1.2.0...node-v1.2.1) (2023-08-14)
 
 
