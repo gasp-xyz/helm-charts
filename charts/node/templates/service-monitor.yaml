@@ -18,4 +18,10 @@ spec:
     path: /metrics
     honorLabels: true
     interval: 30s
+  {{- if .Values.wsHealthExporter.enabled }}
+  - targetPort: http-ws-health
+    honorLabels: true
+    path: /metrics
+    interval: 30s
+  {{- end }}
 {{- end }}
