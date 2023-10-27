@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/mangata-finance/helm-charts/compare/node-v1.3.0...node-v2.0.0) (2023-10-27)
+
+
+### ⚠ BREAKING CHANGES
+
+* Add ws-health-exporter configs and other chart updates MGX-676 ([#30](https://github.com/mangata-finance/helm-charts/issues/30))
+
+### Features
+
+* Add ws-health-exporter configs and other chart updates MGX-676 ([#30](https://github.com/mangata-finance/helm-charts/issues/30)) ([5abc46f](https://github.com/mangata-finance/helm-charts/commit/5abc46f8c52d3e84a583016629fa7627ebae22cf))
+
 ## [1.3.0](https://github.com/mangata-finance/helm-charts/compare/node-v1.2.1...node-v1.3.0) (2023-09-22)
 
 
