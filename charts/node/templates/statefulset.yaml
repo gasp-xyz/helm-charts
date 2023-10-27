@@ -198,9 +198,6 @@ spec:
               name: {{ .type }}
           {{- end }}
         {{- end }}
-        {{- with .Values.extraInitContainers }}
-        {{- toYaml . | nindent 8 }}
-        {{- end }}
       containers:
         - name: node
           image: "{{ .Values.image.repository}}:{{ .Values.image.tag }}"
@@ -325,39 +322,6 @@ spec:
           volumeMounts:
             - mountPath: /chain-data
               name: chain-data
-        {{- end }}
-        {{- if or .Values.wsHealthExporter.enabled }}
-        - name: ws-health-exporter
-          image: {{ .Values.wsHealthExporter.image }}
-          env:
-            {{- $wsHealthExporterEnvDefault := dict "WSHE_NODE_RPC_URLS" (tpl "ws://127.0.0.1:9944" .) }}
-            {{- $wsHealthExporterEnv := mergeOverwrite $wsHealthExporterEnvDefault $.Values.wsHealthExporter.env }}
-            {{- range $key, $val := $wsHealthExporterEnv }}
-            - name: {{ $key }}
-              value: {{ $val | squote }}
-            {{- end }}
-          resources:
-          {{- toYaml .Values.wsHealthExporter.resources | nindent 12 }}
-          ports:
-            - containerPort: 8001
-              name: http-ws-health
-          {{- if .Values.wsHealthExporter.enableSidecarReadinessProbe }}
-          readinessProbe:
-            httpGet:
-              path: /health/readiness
-              port: 8001
-          {{- end }}
-          {{- if .Values.wsHealthExporter.enableSidecarLivenessProbe }}
-          livenessProbe:
-            httpGet:
-              path: /health/readiness
-              port: 8001
-            failureThreshold: 10
-            periodSeconds: 60
-          {{- end }}
-        {{- end }}
-        {{- with .Values.extraContainers }}
-        {{- toYaml . | nindent 8 }}
         {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       {{- with .Values.nodeSelector }}
