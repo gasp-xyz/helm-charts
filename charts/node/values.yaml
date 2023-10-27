@@ -122,3 +122,23 @@ initContainer:
 
 podAnnotations: 
   'fluentbit.io/parser': 'substrate'
+
+# -- Configuration of the WS Health exporter.
+# ref: https://github.com/paritytech/scripts/tree/master/dockerfiles/ws-health-exporter
+wsHealthExporter:
+  enabled: false
+  image: paritytech/ws-health-exporter:0a2e6e9b-20230412
+  # -- Resource limits & requests
+  resources: {}
+  # -- Environment variables to set on the API sidecar
+  env: {}
+  # -- Enable Node readiness probe through `paritytech/ws-health-exporter` running as a sidecar container
+  enableSidecarReadinessProbe: false
+  # -- Enable Node liveness probe through `paritytech/ws-health-exporter` running as a sidecar container
+  enableSidecarLivenessProbe: false
+
+# -- Additional containers to run in the pod
+extraContainers: []
+
+# -- Additional init containers to run in the pod
+extraInitContainers: []
