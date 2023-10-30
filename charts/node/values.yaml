@@ -159,6 +159,32 @@ substrateApiSidecar:
   # -- Resource limits & requests
   resources: {}
 
+# -- Configuration of Jaeger agent
+# https://github.com/jaegertracing/jaeger
+jaegerAgent:
+  enabled: false
+  image:
+    # -- Image repository
+    repository: jaegertracing/jaeger-agent
+    # -- Image tag
+    tag: latest
+  ports:
+    # -- Accept jaeger.thrift over compact thrift protocol
+    compactPort: 6831
+    # -- Accept jaeger.thrift over binary thrift protocol
+    binaryPort: 6832
+    # -- (HTTP) serve configs, sampling strategies
+    samplingPort: 5778
+  # -- Collector config
+  collector:
+    url: null
+    # Jaeger Default GRPC port is 14250
+    port: 14250
+  # -- Environment variables to set on the Jaeger sidecar
+  env: {}
+  # -- Resource limits & requests
+  resources: {}
+
 # -- Additional containers to run in the pod
 extraContainers: []
 

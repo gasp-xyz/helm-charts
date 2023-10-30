@@ -242,6 +242,9 @@ spec:
             - --rpc-methods=unsafe 
             {{- end }}
             - --rpc-cors=all
+            {{- if .Values.jaegerAgent.enabled }}
+            --jaeger-agent=127.0.0.1:{{ .Values.jaegerAgent.ports.compactPort }} \
+            {{- end }}
             {{- range .Values.extraArgs }}
             - {{ . }}
             {{- end }}
@@ -384,6 +387,40 @@ spec:
               protocol: TCP
             {{- end }}
         {{- end }}
+        {{- if .Values.jaegerAgent.enabled }}
+        - name: jaeger-agent-sidecar
+          image: {{ .Values.jaegerAgent.image.repository }}:{{ .Values.jaegerAgent.image.tag }}
+          args:
+            - --reporter.grpc.host-port={{ .Values.jaegerAgent.collector.url }}:{{ .Values.jaegerAgent.collector.port }}
+          env:
+            {{- range $key, $val := .Values.jaegerAgent.env }}
+            - name: {{ $key }}
+              value: {{ $val | squote }}
+            {{- end }}
+          resources:
+          {{- toYaml .Values.jaegerAgent.resources | nindent 12 }}
+          ports:
+            - name: jaeger-compact
+              containerPort: {{ .Values.jaegerAgent.ports.compactPort }}
+              protocol: UDP
+            - name: jaeger-binary
+              containerPort: {{ .Values.jaegerAgent.ports.binaryPort }}
+              protocol: UDP
+            - name: http
+              containerPort: {{ .Values.jaegerAgent.ports.samplingPort }}
+              protocol: TCP
+            - name: admin
+              containerPort: 14271
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: admin
+          readinessProbe:
+            httpGet:
+              path: /
+              port: admin
+        {{- end}}
         {{- with .Values.extraContainers }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
