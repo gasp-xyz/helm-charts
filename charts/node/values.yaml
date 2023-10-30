@@ -137,6 +137,28 @@ wsHealthExporter:
   # -- Enable Node liveness probe through `paritytech/ws-health-exporter` running as a sidecar container
   enableSidecarLivenessProbe: false
 
+# -- Configuration of Substrate API sidecar container
+# ref: https://github.com/paritytech/substrate-api-sidecar
+substrateApiSidecar:
+  # -- Enable Substrate API sidecar container
+  enabled: false
+  image:
+    # -- Image repository
+    repository: parity/substrate-api-sidecar
+    # -- Image tag
+    tag: latest
+  metrics:
+    enabled: false
+    port: 9100
+  # -- Arguments to set on the API sidecar
+  args:
+    - "node"
+    - "build/src/main.js"
+  # -- Environment variables to set on the API sidecar
+  env: {}
+  # -- Resource limits & requests
+  resources: {}
+
 # -- Additional containers to run in the pod
 extraContainers: []
 

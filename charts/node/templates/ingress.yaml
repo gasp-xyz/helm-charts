@@ -20,8 +20,23 @@ spec:
               name: {{ include "node.name" . }}
               port:
                 number: 9944
+    {{- if .Values.substrateApiSidecar.enabled }}
+    - host: {{ include "node.name" . }}-api-{{ .Values.environment }}.{{ .Values.domainZone }}
+      http:
+        paths:
+        - pathType: Prefix
+          path: /
+          backend:
+            service:
+              name: {{ include "node.name" . }}
+              port:
+                number: 8080
+    {{- end }}
   tls:
     - hosts:
         - {{ include "node.name" . }}-ws-{{ .Values.environment }}.{{ .Values.domainZone }}
+        {{- if .Values.substrateApiSidecar.enabled }}
+        - {{ include "node.name" . }}-api-{{ .Values.environment }}.{{ .Values.domainZone }}
+        {{- end }}
       secretName: {{ include "node.name" . }}-tls
 {{- end }}

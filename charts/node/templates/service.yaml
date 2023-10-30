@@ -21,6 +21,16 @@ spec:
       name: http-ws-health
       targetPort: http-ws-health
     {{- end }}
+    {{- if .Values.substrateApiSidecar.enabled }}
+    - port: 8080
+      name: api-sidecar
+      targetPort: api-sidecar
+    {{- if .Values.substrateApiSidecar.metrics.enabled }}
+    - port: {{ .Values.substrateApiSidecar.metrics.port | int }}
+      name: prom-sidecar
+      targetPort: prom-sidecar
+    {{- end }}
+    {{- end }}
   selector:
     {{- include "node.selectorLabels" . | nindent 4 }}
     service: {{ include "node.name" . }}
