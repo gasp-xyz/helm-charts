@@ -24,4 +24,11 @@ spec:
     path: /metrics
     interval: 30s
   {{- end }}
+  {{- if and .Values.substrateApiSidecar.enabled .Values.substrateApiSidecar.metrics.enabled }}
+  - targetPort: prom-sidecar
+    honorLabels: true
+    path: /metrics
+    interval: 30s
+  {{- end }}
+  
 {{- end }}
