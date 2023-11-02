@@ -146,7 +146,7 @@ substrateApiSidecar:
     # -- Image repository
     repository: parity/substrate-api-sidecar
     # -- Image tag
-    tag: latest
+    tag: v17.3.1
   metrics:
     enabled: false
     port: 9100
@@ -157,7 +157,13 @@ substrateApiSidecar:
   # -- Environment variables to set on the API sidecar
   env: {}
   # -- Resource limits & requests
-  resources: {}
+  resources:
+    requests:
+      cpu: 200m
+      memory: 4Gi
+    limits:
+      cpu: 1000m
+      memory: 4Gi
 
 # -- Configuration of Jaeger agent
 # https://github.com/jaegertracing/jaeger
