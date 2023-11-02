@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/mangata-finance/helm-charts/compare/node-v2.0.0...node-v2.0.1) (2023-11-02)
+
+
+### Features
+
+* add substrate api sidecar configuration options MGX-769 ([#32](https://github.com/mangata-finance/helm-charts/issues/32)) ([a2f3fb0](https://github.com/mangata-finance/helm-charts/commit/a2f3fb0ae95bee4970b69dbc3ae9f36da6b156a6))
+
 ## [2.0.0](https://github.com/mangata-finance/helm-charts/compare/node-v1.3.0...node-v2.0.0) (2023-10-27)
 
 
