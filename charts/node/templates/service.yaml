@@ -8,10 +8,8 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-    - port: 9933
-      name: http-rpc
     - port: 9944
-      name: websocket-rpc
+      name: rpc
     - port: 9615
       name: prometheus
     - port: 9625

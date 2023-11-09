@@ -224,15 +224,12 @@ spec:
             {{- else }}
             - --node-key-file=/keystore/node-key
             {{- end }}
-            - --execution=wasm
             - --keystore-path=/keystore
             - --base-path=/chain-data
-            - --rpc-port=9933
-            - --ws-port=9944
+            - --rpc-port=9944
             - --port=30333
             - --prometheus-external
             - --prometheus-port=9615
-            - --unsafe-ws-external
             - --unsafe-rpc-external
             {{- range .Values.telemetryUrls }}
             - --telemetry-url 
@@ -266,17 +263,14 @@ spec:
             {{- else }}
             - --node-key-file=/relaychain-keystore/node-key
             {{- end }}
-            - --execution=wasm
             - --prometheus-external
             - --prometheus-port=9625
             {{- range .Values.relaychain.extraArgs }}
             - {{ . }}
             {{- end }}
           ports:
-            - containerPort: 9933
-              name: http-rpc
             - containerPort: 9944
-              name: websocket-rpc
+              name: rpc
             - containerPort: 9615
               name: prometheus
             - containerPort: 9625
@@ -307,7 +301,7 @@ spec:
             periodSeconds: 10
             httpGet:
               path: /health
-              port: http-rpc
+              port: rpc
           {{- end }}
         {{- if .Values.parachainRegisterSidecar.enable }}
         - name: parachain-register-sidecar
