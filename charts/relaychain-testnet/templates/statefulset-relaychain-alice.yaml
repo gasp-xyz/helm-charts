@@ -44,9 +44,7 @@ spec:
             - --chain={{ .Values.chainspecPath }}
             - --validator
             - --port=30333
-            - --ws-port=9944
-            - --unsafe-ws-external
-            - --rpc-port=40333
+            - --rpc-port=9944
             - --unsafe-rpc-external
             - --rpc-cors=all
             - --prometheus-external
@@ -66,7 +64,6 @@ spec:
             - containerPort: 9616
             - containerPort: 9944
             - containerPort: 30333
-            - containerPort: 40333
           env:
             {{- range $key, $val := .Values.env_vars }}
             - name: {{ $key }}
