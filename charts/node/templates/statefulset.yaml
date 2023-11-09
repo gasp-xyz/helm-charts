@@ -224,14 +224,12 @@ spec:
             {{- else }}
             - --node-key-file=/keystore/node-key
             {{- end }}
-            - --execution=wasm
             - --keystore-path=/keystore
             - --base-path=/chain-data
             - --rpc-port=9944
             - --port=30333
             - --prometheus-external
             - --prometheus-port=9615
-            - --unsafe-ws-external
             - --unsafe-rpc-external
             {{- range .Values.telemetryUrls }}
             - --telemetry-url 
@@ -265,7 +263,6 @@ spec:
             {{- else }}
             - --node-key-file=/relaychain-keystore/node-key
             {{- end }}
-            - --execution=wasm
             - --prometheus-external
             - --prometheus-port=9625
             {{- range .Values.relaychain.extraArgs }}
