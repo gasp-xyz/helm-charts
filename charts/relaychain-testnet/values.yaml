@@ -8,7 +8,7 @@ nameOverride: ''
 remoteCluster: false
 ingressClassName: nginx
 
-image: "parity/polkadot:v0.9.37"
+image: "parity/polkadot:v0.9.38"
 
 chain: rococo-local
 storageClass: standard-rwo
