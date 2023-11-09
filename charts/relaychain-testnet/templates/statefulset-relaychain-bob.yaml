@@ -43,7 +43,6 @@ spec:
             - /usr/bin/polkadot
             - --chain={{ .Values.chainspecPath }}
             - --validator
-            - --unsafe-ws-external
             - --rpc-port=9944
             - --port=30333
             - --unsafe-rpc-external
