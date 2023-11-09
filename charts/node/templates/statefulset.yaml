@@ -227,8 +227,7 @@ spec:
             - --execution=wasm
             - --keystore-path=/keystore
             - --base-path=/chain-data
-            - --rpc-port=9933
-            - --ws-port=9944
+            - --rpc-port=9944
             - --port=30333
             - --prometheus-external
             - --prometheus-port=9615
@@ -273,10 +272,8 @@ spec:
             - {{ . }}
             {{- end }}
           ports:
-            - containerPort: 9933
-              name: http-rpc
             - containerPort: 9944
-              name: websocket-rpc
+              name: rpc
             - containerPort: 9615
               name: prometheus
             - containerPort: 9625
@@ -307,7 +304,7 @@ spec:
             periodSeconds: 10
             httpGet:
               path: /health
-              port: http-rpc
+              port: rpc
           {{- end }}
         {{- if .Values.parachainRegisterSidecar.enable }}
         - name: parachain-register-sidecar
