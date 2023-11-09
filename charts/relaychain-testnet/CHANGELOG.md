@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/mangata-finance/helm-charts/compare/relaychain-testnet-v1.0.0...relaychain-testnet-v1.1.0) (2023-11-09)
+
+
+### Features
+
+* update relaychain chart to remove depricated parameters MGX-808 ([#36](https://github.com/mangata-finance/helm-charts/issues/36)) ([3c43f65](https://github.com/mangata-finance/helm-charts/commit/3c43f65d7f398914a152cd9d1ce63e1b51d5378e))
+
 ## [1.0.0](https://github.com/mangata-finance/helm-charts/compare/relaychain-testnet-v0.3.2...relaychain-testnet-v1.0.0) (2023-07-17)
 
 
