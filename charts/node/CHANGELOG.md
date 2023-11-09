@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.2](https://github.com/mangata-finance/helm-charts/compare/node-v2.0.1...node-v2.0.2) (2023-11-09)
+
+
+### Features
+
+* Remove depricated node paramaters MGX-808 ([#34](https://github.com/mangata-finance/helm-charts/issues/34)) ([0c091ab](https://github.com/mangata-finance/helm-charts/commit/0c091ab9be03820729357ba9a9a33367492e47b6))
+
 ## [2.0.1](https://github.com/mangata-finance/helm-charts/compare/node-v2.0.0...node-v2.0.1) (2023-11-02)
 
 
