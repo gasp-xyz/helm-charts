@@ -10,6 +10,8 @@ storageClass: standard-rwo
 command: /mangata/node
 nodeNameOverride: ''
 
+useLegacyWsPortParameter: false
+
 ## Additional args to use
 extraArgs: []
 env:
