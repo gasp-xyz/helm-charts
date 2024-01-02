@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/mangata-finance/helm-charts/compare/node-v2.0.2...node-v2.1.0) (2024-01-02)
+
+
+### Features
+
+* add variable to allow using legacy `--ws-port` node parameter ([#38](https://github.com/mangata-finance/helm-charts/issues/38)) ([d0c48d4](https://github.com/mangata-finance/helm-charts/commit/d0c48d4c295a6fd4930caf15812d8c0317ab5a0c))
+
 ## [2.0.2](https://github.com/mangata-finance/helm-charts/compare/node-v2.0.1...node-v2.0.2) (2023-11-09)
 
 
