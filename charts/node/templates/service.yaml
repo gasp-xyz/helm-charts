@@ -12,8 +12,10 @@ spec:
       name: rpc
     - port: 9615
       name: prometheus
+    {{- if .Values.isParachain }}
     - port: 9625
       name: prom-relaychain
+    {{- end }}
     {{- if .Values.wsHealthExporter.enabled }}
     - port: 8001
       name: http-ws-health

@@ -53,6 +53,7 @@ spec:
             - mountPath: /chain-data
               name: chain-data
         {{- end }}
+        {{- if .Values.isParachain }}
         {{- if .Values.relaychain.chainData.snapshotUrl }}
         - name: download-relay-chain-snapshot
           image: {{ .Values.initContainer.image.repository }}:{{ .Values.initContainer.image.tag }}
@@ -82,6 +83,7 @@ spec:
             - mountPath: /relaychain-data
               name: relaychain-data
         {{- end }}
+        {{- end }}
         {{- if or .Values.customChainspecUrl .Values.relaychain.customChainspecUrl}}
         - name: download-chainspec
           image: {{ .Values.initContainer.image.repository }}:{{ .Values.initContainer.image.tag }}
@@ -99,6 +101,7 @@ spec:
               fi
               {{- end }}
               {{- end }}
+              {{- if .Values.isParachain }}
               {{- if .Values.relaychain.customChainspecUrl }}
               {{- if not .Values.forceDownloadChainspec }}
               if [ ! -f {{ .Values.relaychain.chainspecPath }} ]; then
@@ -108,11 +111,14 @@ spec:
               fi
               {{- end }}
               {{- end }}
+              {{- end }}
           volumeMounts:
             - mountPath: /chain-data
               name: chain-data
+            {{- if .Values.isParachain }}
             - mountPath: /relaychain-data
               name: relaychain-data
+            {{- end }}
           securityContext:
             runAsUser: 0
         {{- else }}
@@ -131,10 +137,15 @@ spec:
               fi
               {{- end }}
           volumeMounts:
+            - mountPath: /chain-data
+              name: chain-data
+            {{- if .Values.isParachain }}
             - mountPath: /relaychain-data
               name: relaychain-data
+            {{- end }}
           securityContext:
             runAsUser: 0
+        {{- if .Values.isParachain }}
         - name: export-genesis-wasm-and-state
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           command: ["/bin/bash"]
@@ -147,6 +158,7 @@ spec:
           volumeMounts:
             - mountPath: /chain-data
               name: chain-data
+        {{- end }}
         {{- end }}
         {{- if .Values.accountKeys }}
         - name: inject-keys
@@ -178,6 +190,7 @@ spec:
                 && echo "Generated node key into Keystore" \
                 || echo "Failed to generate and insert node key into Keystore."
               fi
+              {{- if .Values.isParachain }}
               RELAYCHAIN_NODE_KEY_PATH="/relaychain-keystore/node-key"
               if [ -f "${RELAYCHAIN_NODE_KEY_PATH}" ]; then
                 echo "Relaychain node key already exists, skipping node key generation"
@@ -186,13 +199,16 @@ spec:
                 && echo "Generated relaychain node key into relaychain Keystore" \
                 || echo "Failed to generate and insert node key into relaychain Keystore."
               fi
+              {{- end }}
           volumeMounts:
             - mountPath: /chain-data
               name: chain-data
             - mountPath: /keystore
               name: chain-keystore
+            {{- if .Values.isParachain }}
             - mountPath: /relaychain-keystore
               name: relaychain-keystore
+            {{- end }}
           {{- range $keys := .Values.accountKeys }}
             - mountPath: /var/run/secrets/{{ .type }}
               name: {{ .type }}
@@ -206,10 +222,9 @@ spec:
           image: "{{ .Values.image.repository}}:{{ .Values.image.tag }}"
           imagePullPolicy: Always
           command:
-            # parachain
             - {{ .Values.command }}
             - --name={{ default (include "node.name" .) .Values.nodeNameOverride }}
-            - --chain={{ if .Values.customChainspecUrl }}{{ .Values.customChainspecPath }}{{ else }}{{ .Values.chain }}{{ end }}
+            - --chain={{ if or .Values.customChainspecUrl .Values.forceCustomChainspecPath }}{{ .Values.customChainspecPath }}{{ else }}{{ .Values.chain }}{{ end }}
             {{- if .Values.isCollator }}
             - --collator
             {{- end }}
@@ -245,13 +260,14 @@ spec:
             {{- end }}
             - --rpc-cors=all
             {{- if .Values.jaegerAgent.enabled }}
-            --jaeger-agent=127.0.0.1:{{ .Values.jaegerAgent.ports.compactPort }} \
+            - --jaeger-agent=127.0.0.1:{{ .Values.jaegerAgent.ports.compactPort }}
             {{- end }}
             {{- range .Values.extraArgs }}
             - {{ . }}
             {{- end }}
+            {{- if .Values.isParachain }}
+            # relaychain params
             - --
-            # relaychain
             - --name={{ default (include "node.name" .) .Values.nodeNameOverride }}
             {{- if .Values.relaychain.bootnodeAddr }}
             - --bootnodes={{ .Values.relaychain.bootnodeAddr }}
@@ -273,17 +289,20 @@ spec:
             {{- range .Values.relaychain.extraArgs }}
             - {{ . }}
             {{- end }}
+            {{- end }}
           ports:
             - containerPort: 9944
               name: rpc
             - containerPort: 9615
               name: prometheus
-            - containerPort: 9625
-              name: prom-relaychain
             - containerPort: 30333
               name: p2p
+            {{- if .Values.isParachain }}
             - containerPort: 30334
               name: p2p-relaychain
+            - containerPort: 9625
+              name: prom-relaychain
+            {{- end }}
           env:
             {{- range $key, $val := .Values.env }}
             - name: {{ $key }}
@@ -296,10 +315,12 @@ spec:
               name: chain-data            
             - mountPath: /keystore
               name: chain-keystore
+            {{- if .Values.isParachain }}
             - mountPath: /relaychain-data
               name: relaychain-data
             - mountPath: /relaychain-keystore
               name: relaychain-keystore
+            {{- end }}
           {{- if .Values.enableStartupProbe }}
           startupProbe:
             failureThreshold: 30
@@ -436,6 +457,10 @@ spec:
       tolerations:
       {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.securityContext }}
+      securityContext:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- if or .Values.accountKeys .Values.keystoreMountInMemoryEnabled }}
       volumes:
       {{- range $keys := .Values.accountKeys }}
@@ -452,12 +477,14 @@ spec:
             {{- if and (.Values.keystoreMountInMemorySizeLimit) (semverCompare ">=1.22-0" .Capabilities.KubeVersion.GitVersion) }}
             sizeLimit: {{ .Values.keystoreMountInMemorySizeLimit }}
             {{- end }}
+        {{- if .Values.isParachain }}
         - name: relaychain-keystore
           emptyDir:
             medium: "Memory"
             {{- if and (.Values.keystoreMountInMemorySizeLimit) (semverCompare ">=1.22-0" .Capabilities.KubeVersion.GitVersion) }}
             sizeLimit: {{ .Values.keystoreMountInMemorySizeLimit }}
             {{- end }}
+        {{- end }}
        {{- end }}
   volumeClaimTemplates:
     - metadata:
@@ -479,6 +506,7 @@ spec:
         resources:
           requests:
             storage: {{ .Values.storageSize }}
+    {{- if .Values.isParachain }}
     - metadata:
         name: relaychain-data
       spec:
@@ -498,6 +526,7 @@ spec:
         resources:
           requests:
             storage: {{ .Values.relaychain.storageSize }}
+    {{- end }}
     {{- if not .Values.keystoreMountInMemoryEnabled }}
     - metadata:
         name: chain-keystore
@@ -507,6 +536,7 @@ spec:
         resources:
           requests:
             storage: {{ .Values.keystoreStorageSize }}
+    {{- if .Values.isParachain }}
     - metadata:
         name: relaychain-keystore
       spec:
@@ -515,4 +545,5 @@ spec:
         resources:
           requests:
             storage: {{ .Values.keystoreStorageSize }}
+    {{- end }}
     {{- end }}
