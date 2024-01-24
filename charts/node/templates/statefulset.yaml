@@ -173,7 +173,7 @@ spec:
                  echo "Error: File /var/run/secrets/{{ .type }}/type does not exist"
                  exit 1
               fi
-              {{ $.Values.command }} key insert --chain {{ if $.Values.customChainspecUrl }}{{ $.Values.customChainspecPath }}{{ else }}{{ $.Values.chain }}{{ end }} \
+              {{ $.Values.command }} key insert --chain {{ if or $.Values.customChainspecUrl $.Values.forceCustomChainspecPath }}{{ $.Values.customChainspecPath }}{{ else }}{{ $.Values.chain }}{{ end }} \
               --keystore-path /keystore \
               --key-type $(cat /var/run/secrets/{{ .type }}/type) \
               --scheme $(cat /var/run/secrets/{{ .type }}/scheme) \
