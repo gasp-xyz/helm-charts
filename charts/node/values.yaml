@@ -25,6 +25,9 @@ image:
   ## Overrides the image tag whose default is the chart appVersion.
   tag: develop
 
+# Defines if node should run as a parachain node
+isParachain: true
+
 isCollator: true
 # Role gets assigned to resources as a label
 role: full
@@ -37,6 +40,7 @@ chain: public-testnet
 allowUnsafeRpcMethods: true
 telemetryUrls: []
 customChainspecPath: "/chain-data/chainspec.json"
+forceCustomChainspecPath: false
 ## When defined, chainspec will be downloaded from the URL.
 ## By default `chain` variable value is passed to node's `--chain` parameter.
 # customChainspecUrl:
@@ -115,6 +119,8 @@ terminationGracePeriodSeconds: 60
 tolerations: []
 # -- Assign custom affinity rules
 affinity: {}
+# -- Assign custom securityContext rules for containers
+securityContext: {}
 
 initContainer:
   image:
