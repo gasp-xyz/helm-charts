@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0](https://github.com/mangata-finance/helm-charts/compare/node-v2.1.0...node-v2.2.0) (2024-01-25)
+
+
+### Features
+
+* add configs to allow to start node as a solo relaychain node MGX-878 ([#40](https://github.com/mangata-finance/helm-charts/issues/40)) ([533b2e6](https://github.com/mangata-finance/helm-charts/commit/533b2e649f6baea1f04792ab97fc35271f15614a))
+
 ## [2.1.0](https://github.com/mangata-finance/helm-charts/compare/node-v2.0.2...node-v2.1.0) (2024-01-02)
 
 
