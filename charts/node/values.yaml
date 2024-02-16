@@ -41,6 +41,7 @@ allowUnsafeRpcMethods: true
 telemetryUrls: []
 customChainspecPath: "/chain-data/chainspec.json"
 forceCustomChainspecPath: false
+disableChainspecGeneration: false
 ## When defined, chainspec will be downloaded from the URL.
 ## By default `chain` variable value is passed to node's `--chain` parameter.
 # customChainspecUrl:
