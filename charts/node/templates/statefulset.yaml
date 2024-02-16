@@ -323,6 +323,7 @@ spec:
             {{- end }}
           {{- if .Values.enableStartupProbe }}
           startupProbe:
+            initialDelaySeconds: {{ .Values.startupProbeInitialDelaySeconds }}
             failureThreshold: 30
             periodSeconds: 10
             httpGet:
