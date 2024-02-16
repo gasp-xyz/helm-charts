@@ -121,7 +121,7 @@ spec:
             {{- end }}
           securityContext:
             runAsUser: 0
-        {{- else }}
+        {{- else if not .Values.disableChainspecGeneration }}
         - name: chainspec-generator
           image: {{ .Values.relaychain.image | quote }}
           command: ["/bin/bash"]
