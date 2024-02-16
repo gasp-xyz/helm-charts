@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.3.0](https://github.com/mangata-finance/helm-charts/compare/node-v2.2.0...node-v2.3.0) (2024-02-16)
+
+
+### Features
+
+* add disableChainspecGeneration variable ([#42](https://github.com/mangata-finance/helm-charts/issues/42)) ([c952b37](https://github.com/mangata-finance/helm-charts/commit/c952b3785ada7edee34f92717bb2219a14e0a642))
+* add startup probe initial delay config MGX-944 ([#45](https://github.com/mangata-finance/helm-charts/issues/45)) ([e9dbd83](https://github.com/mangata-finance/helm-charts/commit/e9dbd8314462dae472943445edb08bcea268f372))
+
 ## [2.2.0](https://github.com/mangata-finance/helm-charts/compare/node-v2.1.0...node-v2.2.0) (2024-01-25)
 
 
