@@ -287,7 +287,7 @@ autoscaling:
   targetMemoryUtilizationPercentage: 90
 
 # Whether or not we want a pod disruption budget, enabled by default, but this only is enabled if replicaCount > 1
-podDistuptionBudget:
+podDisruptionBudget:
   enabled: true
   # maxUnavailable: 1
   minAvailable: 1
