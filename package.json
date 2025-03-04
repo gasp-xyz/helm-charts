@@ -1,7 +1,9 @@
 {
   "name": "helm-charts",
   "private": true,
-  "packageManager": "yarn@4.7.0",
+  "engines": {
+    "node": "22.14.0"
+  },
   "devDependencies": {
     "@semantic-release/exec": "^7.0.3",
     "@semantic-release/git": "^10.0.1",
@@ -10,8 +12,5 @@
   },
   "workspaces": [
     "charts/*"
-  ],
-  "engines": {
-    "node": "22.14.0"
-  }
+  ]
 }

@@ -14,7 +14,7 @@ tasks:
 
   kubeconform:
     script: |
-      helm template . | docker run --rm -i ghcr.io/yannh/kubeconform:v0.6.7-alpine -kubernetes-version 1.31.0 -strict
+      helm template . | kubeconform -kubernetes-version 1.31.0 -strict
     inputs: ['@globs(sources)']
 
   release:
