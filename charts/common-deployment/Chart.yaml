@@ -1,0 +1,8 @@
+apiVersion: v2
+name: common-deployment
+version: 1.0.0
+icon: https://raw.githubusercontent.com/kubernetes/kubernetes/master/logo/logo.png
+description: The Universal Deployment Helm Chart
+keywords:
+  - deployment
+  - helm

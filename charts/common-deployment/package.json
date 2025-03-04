@@ -1,0 +1,7 @@
+{
+  "name": "common-deployment",
+  "private": true,
+  "scripts": {
+    "release": "run -T semantic-release"
+  }
+}
