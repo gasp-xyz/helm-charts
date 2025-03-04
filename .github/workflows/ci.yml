@@ -20,7 +20,7 @@ jobs:
 
       - uses: yokawasa/action-setup-kube-tools@v0.11.2
         with:
-          kubeconform: '6.7.1'
+          kubeconform: '0.6.7'
           helm: '3.17.1'
       - uses: 'moonrepo/setup-toolchain@v0'
       
