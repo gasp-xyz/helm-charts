@@ -1,4 +1,4 @@
-{{- if .Values.podDistuptionBudget.enabled -}}
+{{- if .Values.podDisruptionBudget.enabled -}}
 {{- if or (gt .Values.replicaCount 1.0) ( and (.Values.autoscaling.enabled) (gt .Values.autoscaling.minReplicas 1.0) )  }}
 ################################################
 # Standardized Templates - Pod Disruption Budget (pdb)
@@ -8,11 +8,11 @@ kind: PodDisruptionBudget
 metadata:
   name: {{ template "name" . }}
 spec:
-{{- if .Values.podDistuptionBudget.maxUnavailable }}
-  maxUnavailable: {{ .Values.podDistuptionBudget.maxUnavailable }}
+{{- if .Values.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.podDisruptionBudget.maxUnavailable }}
 {{- end }}
-{{- if .Values.podDistuptionBudget.minAvailable }}
-  minAvailable: {{ .Values.podDistuptionBudget.minAvailable }}
+{{- if .Values.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.podDisruptionBudget.minAvailable }}
 {{- end }}
   selector:
     matchLabels:
