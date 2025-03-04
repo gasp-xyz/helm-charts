@@ -35,3 +35,16 @@ Session.vim
 **/charts/*.tgz
 
 .history
+
+node_modules
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+.moon/cache
+
+*.tgz

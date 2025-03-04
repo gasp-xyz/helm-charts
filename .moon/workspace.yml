@@ -1,0 +1,11 @@
+# https://moonrepo.dev/docs/config/workspace
+$schema: 'https://moonrepo.dev/schemas/workspace.json'
+
+projects:
+  common-deployment: 'charts/common-deployment'
+  node: 'charts/node'
+  relaychain-testnet: 'charts/relaychain-testnet'
+
+vcs:
+  manager: 'git'
+  defaultBranch: 'main'

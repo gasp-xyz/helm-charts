@@ -1,0 +1,7 @@
+{
+  "name": "node",
+  "private": true,
+  "scripts": {
+    "release": "run -T semantic-release"
+  }
+}

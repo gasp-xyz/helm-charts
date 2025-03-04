@@ -1,0 +1,25 @@
+$schema: 'https://moonrepo.dev/schemas/tasks.json'
+
+fileGroups:
+  sources:
+    - templates/**/*
+    - .helmignore
+    - Chart.yaml
+    - values.yaml
+
+tasks:  
+  lint:
+    command: 'helm lint'
+    inputs: ['@globs(sources)']
+
+  kubeconform:
+    script: |
+      helm template . | docker run --rm -i ghcr.io/yannh/kubeconform:v0.6.7-alpine -kubernetes-version 1.31.0 -strict
+    inputs: ['@globs(sources)']
+
+  release:
+    command: yarn run release
+    local: true
+    options:
+      cache: false
+      runInCI: false
