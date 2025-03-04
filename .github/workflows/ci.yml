@@ -13,7 +13,7 @@ permissions:
 # Add concurrency to prevent multiple workflow runs from interfering with each other
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   ci:
