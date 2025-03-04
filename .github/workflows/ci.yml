@@ -10,6 +10,11 @@ permissions:
   packages: write     # For pushing to GitHub Container/OCI registry
   pull-requests: write # If you're creating PRs as part of your workflow
 
+# Add concurrency to prevent multiple workflow runs from interfering with each other
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   ci:
     runs-on: ubuntu-latest
@@ -30,4 +35,11 @@ jobs:
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: appthrust/moon-ci-retrospect@v1
+        if: success() || failure()
+      - uses: moonrepo/run-report-action@v1
+        if: success() || failure()
+        with:
+          access-token: ${{ secrets.GITHUB_TOKEN }}
 
