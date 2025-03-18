@@ -319,6 +319,13 @@ serviceAccount:
 # If we want a hostname set for this deployment
 hostname: ""
 
+# This is incase we want persistence (a mounted volume) which is pretty standard on a statefulset
+persistence:
+  enabled: false
+  size: 10Gi
+  path: "/mnt/data"
+  storageClass: "standard-rwo"
+
 ## For RBAC support, enable if you want, and set the rules you wish, examples below
 rbac:
   create: false

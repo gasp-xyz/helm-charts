@@ -78,9 +78,6 @@ spec:
 {{- if .Values.podSecurityContext }}
       securityContext:
 {{ toYaml .Values.podSecurityContext | indent 8 }}
-{{- else if (eq .Values.security.runAsNonRoot true) }}
-      securityContext:
-{{ toYaml .Values.security | indent 8 }}
 {{- end }}
 
 {{- /*
