@@ -1122,6 +1122,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"common-statefulset@workspace:charts/common-statefulset":
+  version: 0.0.0-use.local
+  resolution: "common-statefulset@workspace:charts/common-statefulset"
+  languageName: unknown
+  linkType: soft
+
 "compare-func@npm:^2.0.0":
   version: 2.0.0
   resolution: "compare-func@npm:2.0.0"
